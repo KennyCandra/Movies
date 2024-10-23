@@ -14,9 +14,10 @@ export default {
     },
     extend: {
       colors: {
-        'white': '#fefefe',
-        'black': '#000',
-        'ahmed': 'blue'
+        'loginBackGround': '#C0C0BC',
+        'thelastSection': '#EDEDEC',
+        'buttonColor': '#F5C518',
+        'navBg' : '#121212',
       }
     },
   },

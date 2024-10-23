@@ -1,26 +1,34 @@
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 function Header() {
+  const navigate = useNavigate();
+  const bear = useSelector((state) => state.bear);
   return (
-    <div className="contanier w-[100%] px-[12px] h-[48px] flex content-center justify-center">
-      <div className="content flex gap-[20px] w-[100%] max-w-5xl m-auto justify-center">
-        <img src="/images/placeHolderImage.jpg" className="w-[64px] h-[32px]" />
-        <div className="flex items-center">
-            <img src="/images/burger menu.png" className="w-[24px] h-[24px]" />
-            <div className="">Menu</div>
-        </div>
-        <div className="flex gap-3">
-            <button>all</button>
-            <input className="border-black border" />
-        </div>
-        <div>
-            <img src="/images/placeHolderImage.jpg" className="w-1 h-1" />
-        </div>
-        <div className="flex gap-4">
-            <button>watch list</button>
-            <button>sign in</button>
-            <button>En</button>
-        </div>
+    <nav className="h-12 flex w-[100%] content-center justify-center flex-wrap m-auto gap-4 bg-navBg">
+      <img src="/images/imbd.png" className="w-16 h-8 cursor-pointer" onClick={()=> navigate('/')} />
+      <div className="flex flex-wrap content-center justify-center">
+        <img
+          src="/images/burger_menu-removebg-preview.png"
+          className="size-8 invert"
+        />
+        <div className="content-evenly text-white">Menu</div>
       </div>
-    </div>
+      <div className="flex flex-wrap content-center justify-center gap-4">
+        <div className="text-white">All</div>
+        <input
+          className="h-5 p-3 rounded-md w-[720px] "
+          placeholder="Search for your favourite Movie"
+        />
+      </div>
+      <img src="/images/imbd.png" className="w-16 h-8" />
+      <div className="flex gap-3 content-center justify-center flex-wrap">
+        <p className="text-white cursor-pointer" onClick={() => navigate('/watchlist')}>Watch List</p>
+        <p className="text-white">
+          {bear.data ? `welcome ${bear.data.username}` : `Sign In`}
+        </p>
+        <p className="text-white">En</p>
+      </div>
+    </nav>
   );
 }
 

@@ -1,28 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value : 0
-}
+  data: '',
+};
 
 export const bearSlice = createSlice({
-    name :'bear',
-    initialState,
-    reducers: {
-        increment: (state) => {
-            state.value++
-        },
-        decrement : (state)=> {
-            state.value--
-        },
-        showState : (state) => {
-            console.log(state.value)
-        },
-        duplicate : (state) => {
-            state.value = state.value * 2
-        }
+  name: "bear",
+  initialState,
+  reducers: {
+    setUser: (state, action) => {
+      state.data = action.payload;
+    },
+    userlogout : (state) => {
+      state.data = null
+      console.log(state.data)
     }
-})
+  },
+});
 
-
-export const {increment , decrement , showState , duplicate} = bearSlice.actions;
-export default bearSlice.reducer
+export const { setUser , userlogout } = bearSlice.actions;
+export default bearSlice.reducer;

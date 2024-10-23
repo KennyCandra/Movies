@@ -34,6 +34,7 @@ export default [
         { allowConstantExport: true },
       ],
       'no-unused-vars': 'warn',
+      'react/no-unescaped-entities' : 'none'
     },
   },
 ]
