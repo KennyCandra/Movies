@@ -8,13 +8,13 @@ function RequireAuth() {
   const navigate = useNavigate();
   const session_id = localStorage.getItem("session_id") || null;
   const request_token = localStorage.getItem("request_token") || null;
-  const bear = useSelector((state) => state.bear);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if(!session_id) {
       navigate('/login')
-    } else if (bear.data === "") {
+    } else if (user.data === "") {
       const fetchData = async () => {
         try {
           const response = await axios.get(

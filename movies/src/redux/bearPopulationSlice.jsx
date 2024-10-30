@@ -4,8 +4,8 @@ const initialState = {
   data: '',
 };
 
-export const bearSlice = createSlice({
-  name: "bear",
+export const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     setUser: (state, action) => {
@@ -18,5 +18,6 @@ export const bearSlice = createSlice({
   },
 });
 
-export const { setUser , userlogout } = bearSlice.actions;
-export default bearSlice.reducer;
+
+export const { setUser , userlogout } = userSlice.actions;
+export default userSlice.reducer;

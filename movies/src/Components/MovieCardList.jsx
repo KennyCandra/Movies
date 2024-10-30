@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ExpandedMovie from "./ExpandedMovie";
 
 function MovieCardList({ movie, index, watchListMovies }) {
-  const bear = useSelector((state) => state.bear.data);
+  const user = useSelector((state) => state.user.data);
   const [showMovieDetails, setShowMovieDetails] = useState(false);
 
   const removeFromWatchList = async (movieId) => {

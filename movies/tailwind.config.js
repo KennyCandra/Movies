@@ -18,6 +18,7 @@ export default {
         'thelastSection': '#EDEDEC',
         'buttonColor': '#F5C518',
         'navBg' : '#121212',
+        'imgHover' : 'rgba(255, 255, 255, 0.5)',
       }
     },
   },

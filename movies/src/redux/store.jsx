@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import bearReducer from './bearPopulationSlice'
+import userReducer from "./bearPopulationSlice";
+import watchListReducer from "./watchListSlice";
 
 export const store = configureStore({
-    reducer : {
-        bear : bearReducer,
-    }
-})
+  reducer: {
+    user: userReducer,
+    watchlist: watchListReducer,
+  },
+});

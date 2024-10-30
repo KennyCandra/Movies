@@ -18,6 +18,7 @@ function MovieCard({ id, movie, poster, title, score }) {
       document.removeEventListener("click", handleClickOutSide);
     };
   }, []);
+
   const favoriteList = async (movieId) => {
     let url1 =
       "https://api.themoviedb.org/3/account/2147483647/favorite?session_id=bc5fbe1bb70203d72d6423bfbb4207be1da66066";

@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import watchlist from "../Pages/WatchList";
 
 const initialState = {
-    watchlist : [],
-}
+  watchlist: [],
+};
 
+export const watchListSlice = createSlice({
+  name: "watchList",
+  initialState: initialState,
+  reducers: {
+    setWatchList: (state, action) => {
+      state.watchlist = action.payload;
+    },
+  },
+});
 
-export const watchListSlice = {
-    name : 'watchList',
-    initialState : initialState,
-    reducers : {
-        
-    }
-}
+export const { setWatchList } = watchListSlice.actions;
+export default watchListSlice.reducer;

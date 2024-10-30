@@ -5,7 +5,7 @@ import MovieCardList from "../Components/MovieCardList";
 import axios from "axios";
 
 function watchlist() {
-  const bear = useSelector((state) => state.bear.data);
+  const user = useSelector((state) => state.user.data);
   const [watchListMovies, setWatchListMovies] = useState([]);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function watchlist() {
     };
     const fetchData = async () => {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/account/${bear.id}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
+        `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
         { headers: headers }
       );
       setWatchListMovies(response.data.results);
@@ -36,7 +36,7 @@ function watchlist() {
             Your Watchlist
           </h1>
           <p className="text-white">
-            Created By:<span className="text-cyan-600">{bear.username}</span>
+            Created By:<span className="text-cyan-600">{user.username}</span>
           </p>
           <p className="text-white">
             Your Watchlist is the place to track the titles you want to watch.
@@ -47,7 +47,7 @@ function watchlist() {
         <section>
           <button
             className="bg-[#f5c518] rounded-sm h-[48px] w-[231px] px-4"
-            onClick={() => alert(`DON't Click At ME ${bear.username}`)}
+            onClick={() => alert(`DON't Click At ME ${user.username}`)}
           >
             <p className="font-bold text-xs">Create A New List</p>
             <p className="text-xs">List your movie , TV & Celebrity picks</p>
@@ -62,6 +62,7 @@ function watchlist() {
             watchListMovies.map((movie, index) => {
               return (
                 <MovieCardList
+                  key={movie.id}
                   movie={movie}
                   index={index}
                   watchListMovies={watchListMovies}

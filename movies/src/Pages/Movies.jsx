@@ -22,6 +22,7 @@ function Movies() {
       console.error(error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
