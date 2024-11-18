@@ -1,38 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "../Components/Header/Header";
 import { useSelector } from "react-redux";
 import MovieCardList from "../Components/MovieCardList";
-import axios from "axios";
+import AsideLists from "../Components/AsideLists";
+import Rating from "../Components/Rating";
+// import NewList from "../Components/NewList";
 
-function watchlist() {
-  const user = useSelector((state) => state.user.data);
-  const [watchListMovies, setWatchListMovies] = useState([]);
-
-  useEffect(() => {
-    const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODg1MDg1MC4xMzkzMSwic3ViIjoiNjZmYmUyODFmMmI5Yzk3YzFkZDYzNjcxIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.cscRHnA4UIi60yO1sS6mac9XrSPVkgFDFp1NahVeffs",
-    };
-    const fetchData = async () => {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
-        { headers: headers }
-      );
-      setWatchListMovies(response.data.results);
-      console.log(watchListMovies);
-    };
-    fetchData();
-  }, []);
+function watchlist1() {
+  const { user, watchlist } = useSelector((state) => ({
+    user: state.user.data,
+    watchlist: state.watchlist.watchlist,
+  }));
+  const [createNewList, setCreateNewList] = useState(false);
 
   return (
     <>
       <Header />
       <div className="w-full bg-[#1f1f1f] h-[262px] flex justify-center gap-4 items-center">
         <section className="w-[50%] flex flex-col gap-6">
-          <h1
-            className="text-white text-4xl"
-            onClick={() => console.log(watchListMovies)}
-          >
+          <h1 className="text-white text-4xl" onClick={() => fetchMovie()}>
             Your Watchlist
           </h1>
           <p className="text-white">
@@ -46,34 +32,35 @@ function watchlist() {
         </section>
         <section>
           <button
-            className="bg-[#f5c518] rounded-sm h-[48px] w-[231px] px-4"
-            onClick={() => alert(`DON't Click At ME ${user.username}`)}
+            className="bg-[#f5c518] rounded-full h-[48px] w-[231px] px-4"
+            onClick={() => setCreateNewList(!createNewList)}
           >
             <p className="font-bold text-xs">Create A New List</p>
             <p className="text-xs">List your movie , TV & Celebrity picks</p>
           </button>
         </section>
       </div>
-      <div className="w-full">
-        <div className="w-[878px] m-auto border-8">
-          {watchListMovies.length === 0 ? (
+      <div className="w-full flex justify-center gap-10 flex-wrap mt-5">
+        <section className="w-[878px] border-8">
+          {watchlist.length === 0 ? (
             <div>loading</div>
           ) : (
-            watchListMovies.map((movie, index) => {
+            watchlist.map((movie, index) => {
               return (
                 <MovieCardList
                   key={movie.id}
                   movie={movie}
                   index={index}
-                  watchListMovies={watchListMovies}
+                  watchListMovies={watchlist}
                 />
               );
             })
           )}
-        </div>
+        </section>
+        <AsideLists />
       </div>
     </>
   );
 }
 
-export default watchlist;
+export default watchlist1;

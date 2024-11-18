@@ -11,8 +11,12 @@ export const watchListSlice = createSlice({
     setWatchList: (state, action) => {
       state.watchlist = action.payload;
     },
+    addMovie: (state, action) => {
+      state.watchlist = [...state.watchlist, action.payload];
+      console.log(state.watchlist);
+    },
   },
 });
 
-export const { setWatchList } = watchListSlice.actions;
+export const { setWatchList, addMovie } = watchListSlice.actions;
 export default watchListSlice.reducer;

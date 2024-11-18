@@ -12,8 +12,8 @@ function RequireAuth() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(!session_id) {
-      navigate('/login')
+    if (!session_id) {
+      navigate("/login");
     } else if (user.data === "") {
       const fetchData = async () => {
         try {
@@ -23,18 +23,20 @@ function RequireAuth() {
           dispatch(setUser(response.data));
         } catch (error) {
           console.error(error);
-          navigate('/login')
+          navigate("/login");
         }
       };
       fetchData();
+    } else {
+      navigate("/");
     }
   }, [session_id]);
 
   useEffect(() => {
-    if(request_token === null){
-      navigate('/login')
+    if (request_token === null) {
+      navigate("/login");
     }
-  },[])
+  }, []);
 
   return <Outlet />;
 }

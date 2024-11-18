@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { loginMethods } from "../variables/loginMethods";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+  const request_token = localStorage.getItem("request_token") || null;
   const getRequestToken = async () => {
     try {
       const response = await axios.get(
@@ -16,8 +19,14 @@ function Login() {
     }
   };
 
+  useEffect(() => {
+    if (request_token !== null) {
+      navigate("/");
+    }
+  }, [request_token]);
+
   return (
-    <div className="bg-loginBackGround h-full">
+    <div className="bg-loginBackGround h-full" onClick={() => console.log(request_token)}>
       <div className=" bg-white max-w-[1080px] flex m-auto">
         <section className="right-section flex flex-col justify-center flex-wrap items-center">
           <h1 className="font-bold">Sign In</h1>
@@ -41,7 +50,10 @@ function Login() {
               <span className="text-sm">or</span>
             </div>
             <div className="flex w-96">
-              <button className="bg-buttonColor m-auto w-[50%] rounded-md font-bold p-[10px]" onClick={getRequestToken}>
+              <button
+                className="bg-buttonColor m-auto w-[50%] rounded-md font-bold p-[10px]"
+                onClick={getRequestToken}
+              >
                 Sign In using TMBD!
               </button>
             </div>

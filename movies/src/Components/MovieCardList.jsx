@@ -1,38 +1,27 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import ExpandedMovie from "./ExpandedMovie";
+import * as action from "../Modules/Movies";
 
 function MovieCardList({ movie, index, watchListMovies }) {
-  const user = useSelector((state) => state.user.data);
   const [showMovieDetails, setShowMovieDetails] = useState(false);
-
-  const removeFromWatchList = async (movieId) => {
-    let url1 =
-      "https://api.themoviedb.org/3/account/2147483647/watchlist?session_id=bc5fbe1bb70203d72d6423bfbb4207be1da66066";
-    const data = {
-      media_type: "movie",
-      media_id: movieId,
-      watchlist: false,
-    };
-    const header = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODU2NjQ1Mi4xNjUwNDUsInN1YiI6IjY2ZmJlMjgxZjJiOWM5N2MxZGQ2MzY3MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.46ZdohKOAXxABXt9pV-dNn23WiLnYXGz-L2sHuq-MSU",
-    };
-    try {
-      const response = await axios.post(url1, data, { headers: header });
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <>
       <div className="w-[867px] p-3 flex flex-col gap-6 m-auto" key={movie.id}>
         <div className="flex justify-between">
           <div className="flex gap-3">
-            <div className="h-[105px] w-[72px] cursor-pointer rounded-lg">
+            <div className="h-[105px] w-[72px] cursor-pointer rounded-lg relative">
+              <button
+                onClick={() => action.removeFromWatchList(movie.id)(movie.id)}
+                className="absolute top-0 left-0"
+              >
+                <div className="relative w-8 h-10 bg-gray-500 opacity-50 hover:opacity-100 hover:bg-gray-800 rounded-t-md rounded-bl-md overflow-hidden flex items-center justify-center">
+                  <span className="text-white text-xl font-bold">👌</span>
+                  <div className="absolute bottom-0 left-0 overflow-hidden">
+                    <div className="bg-brown-600 rotate-45 transform origin-top-left"></div>
+                  </div>
+                </div>
+              </button>
               <img
                 className="rounded-lg"
                 src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
@@ -50,11 +39,11 @@ function MovieCardList({ movie, index, watchListMovies }) {
             </div>
           </div>
           <div>
-            <button onClick={() => setShowMovieDetails(true)}>
-              Show More Details Bro!
-            </button>
-            <button onClick={() => removeFromWatchList(movie.id)}>
-              Remove ME
+            <button
+              onClick={() => setShowMovieDetails(true)}
+              className="flex  flex-wrap justify-center content-center rounded-full w-4 h-4 border-black p-3 border text-blue-500 hover:bg-cyan-300 "
+            >
+              !
             </button>
           </div>
         </div>
@@ -62,7 +51,7 @@ function MovieCardList({ movie, index, watchListMovies }) {
           <p className="font-extralight font">{movie.overview}</p>
         </div>
         {index !== watchListMovies.length - 1 ? (
-        <div className="divider border w-[98%]" />
+          <div className="divider border w-[98%]" />
         ) : null}
       </div>
       {showMovieDetails && (

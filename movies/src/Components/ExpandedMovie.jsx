@@ -1,5 +1,3 @@
-import React from "react";
-
 function ExpandedMovie({ name, movie, setMovieDeails }) {
   return (
     <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 text-white flex justify-center items-center z-50 flex-col">

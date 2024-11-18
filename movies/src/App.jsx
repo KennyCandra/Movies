@@ -6,7 +6,9 @@ import Home from "./Pages/Home";
 import RequireAuth from "./Components/RequireAuth";
 import Login from "./Pages/Login.Jsx";
 import Movies from "./Pages/Movies";
-import WatchList from './Pages/WatchList'
+import WatchList from "./Pages/WatchList";
+import MoviePage from "./Components/MoviePage";
+import Footer from "./Components/Footer";
 
 function App() {
   return (
@@ -25,8 +27,27 @@ function App() {
         <Route path="/header" element={<Header />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/watchlist" element={<WatchList />} />
+        <Route
+          path="/movie/:id"
+          element={
+            <div className="bg-black">
+              <Header />
+              <MoviePage />
+              <Footer />
+            </div>
+          }
+        />
       </Route>
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/login"
+        element={
+          <>
+            <Header />
+            <Login />
+            <Footer />
+          </>
+        }
+      />
     </Routes>
   );
 }

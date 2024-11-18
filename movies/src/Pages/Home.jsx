@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { setUser, userlogout } from "../redux/bearPopulationSlice";
 import axios from "axios";
 import Loader from "../Components/Loader";
@@ -43,7 +42,7 @@ function Home() {
     );
   return (
     <div className="bg-black text-white w-screen h-screen">
-      <div className="p-5"/>
+      <div className="p-5" />
       <Main />
       <Featured />
       <Footer />
