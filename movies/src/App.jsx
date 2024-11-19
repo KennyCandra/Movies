@@ -9,6 +9,7 @@ import Movies from "./Pages/Movies";
 import WatchList from "./Pages/WatchList";
 import MoviePage from "./Components/MoviePage";
 import Footer from "./Components/Footer";
+import Lists from "./Pages/Lists";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             </div>
           }
         />
+        <Route path="/lists/:id" element={<Lists />} />
       </Route>
       <Route
         path="/login"

@@ -1,22 +1,32 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchList } from "../Modules/Movies";
 import Header from "../Components/Header/Header";
+import Footer from "../Components/Footer";
 import { useSelector } from "react-redux";
 import MovieCardList from "../Components/MovieCardList";
 import AsideLists from "../Components/AsideLists";
-import Rating from "../Components/Rating";
-import Footer from "../Components/Footer";
 
-function watchlist1() {
+function Lists() {
+  const { id } = useParams();
   const { user, watchlist } = useSelector((state) => ({
     user: state.user.data,
     watchlist: state.watchlist.watchlist,
   }));
-  const [createNewList, setCreateNewList] = useState(false);
+  const [list, setList] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchList(id);
+      setList(data);
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       <Header />
-      <div className="w-full bg-[#1f1f1f] h-[262px] flex justify-center gap-4 items-center">
+      <div className="w-full bg-[#1f1f1f] h-[262px] flex justify-center gap-4 items-center" onClick={() => console.log(list)}>
         <section className="w-[50%] flex flex-col gap-6">
           <h1 className="text-white text-4xl" onClick={() => fetchMovie()}>
             Your Watchlist
@@ -64,4 +74,4 @@ function watchlist1() {
   );
 }
 
-export default watchlist1;
+export default Lists;

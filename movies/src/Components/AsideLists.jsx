@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import * as action from "../Modules/Movies";
+import { getMyLists } from "../Modules/Movies";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function AsideLists() {
+  const navigate = useNavigate()
   const { watchlist } = useSelector((state) => ({
     watchlist: state.watchlist.watchlist,
   }));
 
   const [myList, setMyLists] = useState([]);
 
+  const fetchLists = async () => {
+    const lists = await getMyLists();
+    setMyLists(lists);
+  };
+
   useEffect(() => {
-    const fetchLists = async () => {
-      const lists = await action.getMyLists();
-      setMyLists(lists);
-    };
     fetchLists();
   }, []);
   return (
@@ -80,7 +83,7 @@ function AsideLists() {
                 className="flex flex-col flex-wrap justify-between h-[95px] w-[370px] border pl-5 content-between p-[3px] rounded-lg"
               >
                 <div className="flex flex-col justify-around h-full">
-                  <h2>{list.description}</h2>
+                  <h2 className="hover:underline cursor-pointer" onClick={() => navigate(`/lists/${list.id}`)}>{list.description}</h2>
                   <p>{list.item_count}</p>
                 </div>
                 <div className="w-[72px] h-[107px] overflow-hidden">

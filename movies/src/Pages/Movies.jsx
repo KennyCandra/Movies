@@ -1,89 +1,71 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import MovieCard from "../Components/MovieCard";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { options } from "../variables/loginMethods";
+import { fetchTypes, fetchDataMovie, search } from "../Modules/Movies";
 
 function Movies() {
   const [movies, setMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [option, setOption] = useState("popularity.desc");
+  const [filters, setFilters] = useState({
+    genres: [],
+    options: "popularity.desc",
+    num: 1,
+    selectedGenres: [],
+  });
   const [activeButtons, setActiveButtons] = useState({});
   const [expand, setExpand] = useState({
     sort: false,
     whereToWatch: false,
     Filters: false,
   });
-  const [num, setNum] = useState(1);
 
-  const header = {
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODU2NjQ1Mi4xNjUwNDUsInN1YiI6IjY2ZmJlMjgxZjJiOWM5N2MxZGQ2MzY3MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.46ZdohKOAXxABXt9pV-dNn23WiLnYXGz-L2sHuq-MSU",
+  const searching = async () => {
+    try {
+      const activeGenres = Object.entries(activeButtons)
+        .filter(([_, isActive]) => isActive)
+        .map(([genre]) => genre);
+
+      const finalGenreArr = filters.genres
+        .filter((genre) => activeGenres.includes(genre.name))
+        .map((genre) => genre.id);
+
+      setFilters((prev) => ({
+        ...prev,
+        num: 2,
+        selectedGenres: finalGenreArr,
+      }));
+      const Data = await search(filters.options, finalGenreArr, 1);
+      setMovies(Data);
+      setFilters((prev) => ({
+        ...prev,
+        num: prev.num + 1,
+      }));
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
   };
 
-  let filterdFenre = [];
-  let finalGenreArr = [];
-  useEffect(() => {
-    for (let property in activeButtons) {
-      activeButtons[property] === true ? filterdFenre.push(property) : null;
-      console.log(filterdFenre);
-    }
-    finalGenreArr = genres
-      .filter((genre) => filterdFenre.includes(genre.name))
-      .map((genre) => genre.id);
-    console.log(finalGenreArr);
-  }, [activeButtons]);
-
-  const search = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/discover/movie`,
-        {
-          params: { sort_by: option, with_genres: finalGenreArr, page: 1 },
-          headers: header,
-        }
-      );
-      console.log(finalGenreArr);
-      setMovies(response.data.results);
-    } catch (error) {
-      console.error(error);
-    }
-    setNum(2);
+  const fetchGenre = async () => {
+    const genres = await fetchTypes();
+    setFilters((prev) => ({ ...prev, genres: genres }));
   };
 
   const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US?&page=`,
-        {
-          params: { sort_by: option, with_genres: finalGenreArr, page: num },
-          headers: header,
-        }
-      );
-      setMovies([...movies, ...response.data.results]);
-      setNum((prev) => (prev = prev + 1));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchGenres = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/genre/movie/list`,
-        { headers: header }
-      );
-      setGenres(response.data.genres);
-    } catch (error) {
-      console.error(error);
-    }
+    const Data = await fetchDataMovie(
+      filters.options,
+      filters.selectedGenres,
+      filters.num
+    );
+    setMovies((prev) => [...prev, ...Data]);
+    setFilters((prev) => ({ ...prev, num: prev.num + 1 }));
   };
 
   useEffect(() => {
     fetchData();
-    fetchGenres();
+    fetchGenre();
   }, []);
+
   return (
     <>
       <Header />
@@ -102,8 +84,10 @@ function Movies() {
                 <p className="mb-5">Sort Results By</p>
                 <select
                   className="bg-gray-500 text-xs py-1 px-1 rounded-md"
-                  value={option}
-                  onChange={(e) => setOption(e.target.value)}
+                  value={filters.options}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, options: e.target.value }))
+                  }
                 >
                   {options.map((option) => {
                     return (
@@ -136,7 +120,7 @@ function Movies() {
             </h1>
             {expand.Filters && (
               <div className="grid grid-cols-2 gap-2 py-5">
-                {genres.map(({ id, name }) => {
+                {filters.genres?.map(({ id, name }) => {
                   return (
                     <button
                       key={id}
@@ -158,7 +142,7 @@ function Movies() {
             )}
           </div>
           <button
-            onClick={search}
+            onClick={searching}
             className="hover:bg-blue-600 hover:text-white transition border rounded-full"
           >
             Search

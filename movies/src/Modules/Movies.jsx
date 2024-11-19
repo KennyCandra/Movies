@@ -157,3 +157,66 @@ export const fetchMovies = async () => {
     console.error;
   }
 };
+
+export const fetchTypes = async () => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/genre/movie/list`,
+      { headers: headers }
+    );
+    return response.data.genres;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchDataMovie = async (sortBy, WithGenres, num) => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US?&page=`,
+      {
+        params: {
+          sort_by: sortBy,
+          with_genres: WithGenres,
+          page: num,
+        },
+        headers: headers,
+      }
+    );
+    console.log(response.data.results);
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const search = async (sort_by, with_genres , num) => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie`,
+      {
+        params: {
+          sort_by: sort_by,
+          with_genres: with_genres,
+          page: num,
+        },
+        headers: headers,
+      }
+    );
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+export const fetchList = async (id) => {
+  try {
+    const data = await axios.get(`https://api.themoviedb.org/3/list/${id}`, {
+      headers: headers,
+    });
+    return data.data
+  } catch (error) {
+    console.error(error);
+  }
+};
