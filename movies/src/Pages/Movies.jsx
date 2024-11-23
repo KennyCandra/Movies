@@ -35,12 +35,8 @@ function Movies() {
         num: 2,
         selectedGenres: finalGenreArr,
       }));
-      const Data = await search(filters.options, finalGenreArr, 1);
-      setMovies(Data);
-      setFilters((prev) => ({
-        ...prev,
-        num: prev.num + 1,
-      }));
+      const data = await search(filters.options, finalGenreArr, 1);
+      setMovies(data);
     } catch (error) {
       console.error("Search failed:", error);
     }
@@ -57,7 +53,7 @@ function Movies() {
       filters.selectedGenres,
       filters.num
     );
-    setMovies((prev) => [...prev, ...Data]);
+    setMovies([...movies, ...Data]);
     setFilters((prev) => ({ ...prev, num: prev.num + 1 }));
   };
 

@@ -3,42 +3,44 @@ import { useParams } from "react-router-dom";
 import { fetchList } from "../Modules/Movies";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
-import { useSelector } from "react-redux";
 import MovieCardList from "../Components/MovieCardList";
 import AsideLists from "../Components/AsideLists";
 
 function Lists() {
   const { id } = useParams();
-  const { user, watchlist } = useSelector((state) => ({
-    user: state.user.data,
-    watchlist: state.watchlist.watchlist,
-  }));
   const [list, setList] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchList(id);
-      setList(data);
+      try {
+        setLoading(true);
+        const data = await fetchList(id);
+        setList(data);
+        setMovies(data.items);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [id]);
   return (
     <>
       <Header />
-      <div className="w-full bg-[#1f1f1f] h-[262px] flex justify-center gap-4 items-center" onClick={() => console.log(list)}>
+      <div
+        className="w-full bg-[#1f1f1f] h-[262px] flex justify-center gap-4 items-center"
+      >
         <section className="w-[50%] flex flex-col gap-6">
-          <h1 className="text-white text-4xl" onClick={() => fetchMovie()}>
-            Your Watchlist
-          </h1>
+          <h1 className="text-white text-4xl">List :{list.name}</h1>
           <p className="text-white">
-            Created By:<span className="text-cyan-600">{user.username}</span>
+            Created By :
+            <span className="text-cyan-600 px-2">{list.created_by}</span>
           </p>
-          <p className="text-white">
-            Your Watchlist is the place to track the titles you want to watch.
-            You can sort your Watchlist by the IMDb rating, popularity score and
-            arrange your titles in the order you want to see them.
-          </p>
+          <p className="text-white">{list.description}</p>
         </section>
         <section>
           <button
@@ -50,18 +52,19 @@ function Lists() {
           </button>
         </section>
       </div>
-      <div className="w-full flex justify-center gap-10 flex-wrap mt-5">
-        <section className="w-[878px] border-8">
-          {watchlist.length === 0 ? (
+      <div className="w-full flex justify-center items-start gap-10 flex-wrap mt-5">
+        <section className="w-[878px] border-8 h-auto overflow-visible">
+          {loading ? (
             <div>loading</div>
           ) : (
-            watchlist.map((movie, index) => {
+            movies.map((movie, index) => {
               return (
                 <MovieCardList
+                  className="h-auto"
                   key={movie.id}
                   movie={movie}
                   index={index}
-                  watchListMovies={watchlist}
+                  watchListMovies={movies}
                 />
               );
             })

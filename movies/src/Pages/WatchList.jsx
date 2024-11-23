@@ -3,7 +3,6 @@ import Header from "../Components/Header/Header";
 import { useSelector } from "react-redux";
 import MovieCardList from "../Components/MovieCardList";
 import AsideLists from "../Components/AsideLists";
-import Rating from "../Components/Rating";
 import Footer from "../Components/Footer";
 
 function watchlist1() {
@@ -41,21 +40,24 @@ function watchlist1() {
         </section>
       </div>
       <div className="w-full flex justify-center gap-10 flex-wrap mt-5">
-        <section className="w-[878px] border-8">
-          {watchlist.length === 0 ? (
-            <div>loading</div>
-          ) : (
-            watchlist.map((movie, index) => {
-              return (
-                <MovieCardList
-                  key={movie.id}
-                  movie={movie}
-                  index={index}
-                  watchListMovies={watchlist}
-                />
-              );
-            })
-          )}
+        <section className="">
+          <h1 className="font-bold">{watchlist.length} titles</h1>
+          <div className="w-[878px] border-2">
+            {watchlist.length === 0 ? (
+              <div>loading</div>
+            ) : (
+              watchlist.map((movie, index) => {
+                return (
+                  <MovieCardList
+                    key={movie.id}
+                    movie={movie}
+                    index={index}
+                    watchListMovies={watchlist}
+                  />
+                );
+              })
+            )}
+          </div>
         </section>
         <AsideLists />
       </div>

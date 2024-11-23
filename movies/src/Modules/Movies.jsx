@@ -16,7 +16,6 @@ export const addRatingAPI = async (id, value) => {
       data,
       { headers: headers }
     );
-    console.log(response);
   } catch (error) {
     console.log(error);
   }
@@ -40,7 +39,6 @@ export const removeRating = async (id) => {
       `https://api.themoviedb.org/3/movie/${id}/rating`,
       { headers: headers }
     );
-    console.log(response);
     return response;
   } catch (error) {
     console.error(error);
@@ -56,6 +54,7 @@ export const addToFavoriteList = async (movieId) => {
   };
   try {
     const response = await axios.post(url1, data, { headers: headers });
+    console.log(response)
     return response;
   } catch (error) {
     console.error(error);
@@ -74,7 +73,7 @@ export const addToWatchlist = async (movieId) => {
       data,
       { headers: headers }
     );
-    console.log(response);
+    console.log(response)
     return response;
   } catch (error) {
     console.error(error);
@@ -183,7 +182,6 @@ export const fetchDataMovie = async (sortBy, WithGenres, num) => {
         headers: headers,
       }
     );
-    console.log(response.data.results);
     return response.data.results;
   } catch (error) {
     console.error(error);
