@@ -105,7 +105,7 @@ function Main() {
                     </p>
                   </button>
                   <img
-                    onClick={() => navigate(`/movies/${MovieToShow.id}`)}
+                    onClick={() => navigate(`/movie/${MovieToShow.id}`)}
                     className="w-full h-[245px] object-cover"
                     src={`https://image.tmdb.org/t/p/original/${MovieToShow.poster_path}`}
                     alt={`${MovieToShow.title} poster`}

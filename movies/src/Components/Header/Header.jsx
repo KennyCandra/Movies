@@ -42,7 +42,7 @@ function Header() {
 
   const navigation = (movieId) => {
     navigate(`/movie/${movieId}`);
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
