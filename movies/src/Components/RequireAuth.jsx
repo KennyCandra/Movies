@@ -6,37 +6,33 @@ import { setUser } from "../redux/bearPopulationSlice";
 
 function RequireAuth() {
   const navigate = useNavigate();
-  const session_id = localStorage.getItem("session_id") || null;
-  const request_token = localStorage.getItem("request_token") || null;
+  const session_id = localStorage.getItem("session_id") ?? null;
+  const request_token = localStorage.getItem("request_token") ?? null;
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!session_id) {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/account?api_key=9ddc2f1438cb3e4e1cbcf0137b3dd7f7&session_id=${session_id}`
+      );
+      dispatch(setUser(response.data));
+      navigate('/')
+    } catch (error) {
+      console.error(error);
       navigate("/login");
-    } else if (user.data === "") {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://api.themoviedb.org/3/account?api_key=efe9113f3d59fb2b004bd1d702a26064&session_id=${session_id}`
-          );
-          dispatch(setUser(response.data));
-        } catch (error) {
-          console.error(error);
-          navigate("/login");
-        }
-      };
-      fetchData();
-    } else {
-      navigate("/");
     }
-  }, [session_id]);
+  };
 
   useEffect(() => {
-    if (request_token === null) {
-      navigate("/login");
-    }
+    if (!session_id) navigate("/login");
+    if (session_id && user.data === "") fetchData();
   }, []);
+
+  useEffect(() => {
+    if (request_token === null) navigate("/login");
+    if (user.data !== "") return navigate("/");
+  }, [request_token, user , location]);
 
   return <Outlet />;
 }

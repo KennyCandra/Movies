@@ -1,21 +1,25 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setWatchList } from "../../redux/watchListSlice";
 import { useEffect } from "react";
-import axios from "axios";
 import { userlogout } from "../../redux/bearPopulationSlice";
 import { useState } from "react";
+import { searching } from "../../Modules/Movies";
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, watchlist } = useSelector((state) => ({
-    user: state.user?.data,
-    watchlist: state.watchlist,
-  }));
+  const { user, watchlist } = useSelector(
+    (state) => ({
+      user: state.user?.data,
+      watchlist: state.watchlist.watchlist,
+    }),
+    shallowEqual
+  );
   const [hovered, setHovered] = useState(false);
   const [search, setSearch] = useState("");
   const [searchArr, setSearchArr] = useState(null);
+  const location = useLocation();
 
   const logOut = () => {
     localStorage.clear();
@@ -26,40 +30,15 @@ function Header() {
 
   useEffect(() => {
     const searchMovie = async () => {
-      const headers = {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODg1MDg1MC4xMzkzMSwic3ViIjoiNjZmYmUyODFmMmI5Yzk3YzFkZDYzNjcxIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.cscRHnA4UIi60yO1sS6mac9XrSPVkgFDFp1NahVeffs",
-      };
       try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?query=${search}`,
-          {
-            headers: headers,
-          }
-        );
-        setSearchArr(response.data.results);
+        const response = await searching(search);
+        setSearchArr(response);
       } catch (error) {
         console.error(error);
       }
     };
-
     searchMovie();
   }, [search]);
-
-  useEffect(() => {
-    const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODg1MDg1MC4xMzkzMSwic3ViIjoiNjZmYmUyODFmMmI5Yzk3YzFkZDYzNjcxIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.cscRHnA4UIi60yO1sS6mac9XrSPVkgFDFp1NahVeffs",
-    };
-    const fetchData = async () => {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
-        { headers: headers }
-      );
-      dispatch(setWatchList(response.data.results));
-    };
-    fetchData();
-  }, []);
 
   const navigation = (movieId) => {
     navigate(`/movie/${movieId}`);
@@ -80,12 +59,12 @@ function Header() {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="size-6 text-white"
+              className="size-6 text-white"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
           </span>
@@ -102,27 +81,28 @@ function Header() {
             />
             {searchArr !== null && (
               <div className="flex flex-col absolute w-[720px] max-h-[500px] top-8 text-white bg-black gap-3 z-50 overflow-scroll">
-                {searchArr
-                  .filter((movie) => movie.poster_path !== null)
-                  .map((movie) => {
-                    return (
-                      <div
-                        onClick={() => navigation(movie.id)}
-                        className="flex gap-4 cursor-pointer hover:bg-gray-950 h-[80px]"
-                      >
-                        <div className="h-[70px] w-[50px]">
-                          <img
-                            src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
-                            alt="movie image"
-                          />
+                {location.pathname !== "/login" &&
+                  searchArr
+                    .filter((movie) => movie.poster_path !== null)
+                    .map((movie) => {
+                      return (
+                        <div
+                          onClick={() => navigation(movie.id)}
+                          className="flex gap-4 cursor-pointer hover:bg-gray-950 h-[80px]"
+                        >
+                          <div className="h-[70px] w-[50px]">
+                            <img
+                              src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                              alt="movie image"
+                            />
+                          </div>
+                          <div>
+                            <h1>{movie.title}</h1>
+                            <p>{movie.release_date}</p>
+                          </div>
                         </div>
-                        <div>
-                          <h1>{movie.title}</h1>
-                          <p>{movie.release_date}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
               </div>
             )}
           </div>
@@ -137,13 +117,13 @@ function Header() {
         <div className="gap-3 flex items-center justify-center">
           <p
             className="hidden lg:block text-white cursor-pointer hover:bg-gray-700 transition-all px-3 rounded-full"
-            onClick={() => navigate("/watchlist")}
+            onClick={() =>
+              location.pathname === "/login" ? null : navigate("/watchlist")
+            }
           >
             Watch List
             <span className="inline-flex justify-center flex-wrap content-center h-4 hover:bg-yellow-300 w-6 text-xs bg-yellow-500 text-black mx-1 rounded-full border">
-              {watchlist?.watchlist.length === 0
-                ? "+"
-                : watchlist.watchlist.length}
+              {Array.isArray(watchlist) ? watchlist.length : "0"}
             </span>
           </p>
           <div
@@ -173,13 +153,13 @@ function Header() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-6 text-white"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                 />
               </svg>

@@ -1,15 +1,18 @@
 import { useState } from "react";
 import Header from "../Components/Header/Header";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import MovieCardList from "../Components/MovieCardList";
 import AsideLists from "../Components/AsideLists";
 import Footer from "../Components/Footer";
 
 function watchlist1() {
-  const { user, watchlist } = useSelector((state) => ({
-    user: state.user.data,
-    watchlist: state.watchlist.watchlist,
-  }));
+  const { user, watchlist } = useSelector(
+    (state) => ({
+      user: state.user.data,
+      watchlist: state.watchlist.watchlist,
+    }),
+    shallowEqual
+  );
   const [createNewList, setCreateNewList] = useState(false);
 
   return (

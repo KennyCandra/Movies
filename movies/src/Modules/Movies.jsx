@@ -1,30 +1,35 @@
 import axios from "axios";
 
 const headers = {
+  accept: "application/json",
+  "content-type": "application/json",
   Authorization:
-    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODg1MDg1MC4xMzkzMSwic3ViIjoiNjZmYmUyODFmMmI5Yzk3YzFkZDYzNjcxIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.cscRHnA4UIi60yO1sS6mac9XrSPVkgFDFp1NahVeffs",
+    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZGRjMmYxNDM4Y2IzZTRlMWNiY2YwMTM3YjNkZDdmNyIsIm5iZiI6MTczMjY2ODg5Ni4zODkzNDYxLCJzdWIiOiI2NzE5NjkxM2ZlZmQxZTA1MTBmZmQ3YmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.5MJklDntDf5ytap0bHJavqttf1f8JXfBOTJwRXDfvVc",
   "Content-Type": "application/json;charset=utf-8",
 };
 
-const sessionD = localStorage.getItem("session_id");
+const sessionD = localStorage.getItem("session_id" || null);
 
 export const addRatingAPI = async (id, value) => {
   const data = { value: value };
   try {
     const response = await axios.post(
-      `https://api.themoviedb.org/3/movie/${id}/rating`,
+      `https://api.themoviedb.org/3/movie/${id}/rating?session_id=${sessionD}`,
       data,
       { headers: headers }
     );
+    console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
 };
 
+// DONE!!
 export const fetchRating = async (id) => {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${id}/account_states`,
+      `https://api.themoviedb.org/3/movie/${id}/account_states?session_id=${sessionD}`,
       { headers }
     );
     return response.data;
@@ -33,10 +38,11 @@ export const fetchRating = async (id) => {
   }
 };
 
+// DONE!!
 export const removeRating = async (id) => {
   try {
     const response = await axios.delete(
-      `https://api.themoviedb.org/3/movie/${id}/rating`,
+      `https://api.themoviedb.org/3/movie/${id}/rating?session_id=${sessionD}`,
       { headers: headers }
     );
     return response;
@@ -45,8 +51,8 @@ export const removeRating = async (id) => {
   }
 };
 
-export const addToFavoriteList = async (movieId) => {
-  let url1 = `https://api.themoviedb.org/3/account/2147483647/favorite?session_id=${sessionD}`;
+export const addToFavoriteList = async (movieId, id) => {
+  let url1 = `https://api.themoviedb.org/3/account/${id}/favorite?session_id=${sessionD}`;
   const data = {
     media_type: "movie",
     media_id: movieId,
@@ -54,14 +60,14 @@ export const addToFavoriteList = async (movieId) => {
   };
   try {
     const response = await axios.post(url1, data, { headers: headers });
-    console.log(response)
+    console.log(response);
     return response;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const addToWatchlist = async (movieId) => {
+export const addToWatchlist = async (movieId, user) => {
   const data = {
     media_type: "movie",
     media_id: movieId,
@@ -69,11 +75,11 @@ export const addToWatchlist = async (movieId) => {
   };
   try {
     const response = await axios.post(
-      "https://api.themoviedb.org/3/account/null/watchlist",
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist?session_id=${sessionD}`,
       data,
       { headers: headers }
     );
-    console.log(response)
+    console.log(`added to watch list`);
     return response;
   } catch (error) {
     console.error(error);
@@ -109,10 +115,10 @@ export const removeFromWatchList = async (movieId) => {
   }
 };
 
-export const getMyLists = async () => {
+export const getMyLists = async (user) => {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/account/${sessionD}/lists`,
+      `https://api.themoviedb.org/3/account/${user.id}/lists?session_id=${sessionD}`,
       { headers: headers }
     );
     return response.data.results;
@@ -121,10 +127,11 @@ export const getMyLists = async () => {
   }
 };
 
-export const fetchWatchList = async () => {
+export const fetchWatchList = async (user) => {
+  if (sessionD === null) return;
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?session_id=${sessionD}`,
       { headers: headers }
     );
     return response.data.results;
@@ -188,7 +195,7 @@ export const fetchDataMovie = async (sortBy, WithGenres, num) => {
   }
 };
 
-export const search = async (sort_by, with_genres , num) => {
+export const search = async (sort_by, with_genres, num) => {
   try {
     const response = await axios.get(
       `https://api.themoviedb.org/3/discover/movie`,
@@ -207,13 +214,26 @@ export const search = async (sort_by, with_genres , num) => {
   }
 };
 
-
 export const fetchList = async (id) => {
   try {
     const data = await axios.get(`https://api.themoviedb.org/3/list/${id}`, {
       headers: headers,
     });
-    return data.data
+    return data.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const searching = async (value) => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/search/movie?query=${value}`,
+      {
+        headers: headers,
+      }
+    );
+    return response.data.results;
   } catch (error) {
     console.error(error);
   }

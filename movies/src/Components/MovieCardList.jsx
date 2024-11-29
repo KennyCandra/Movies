@@ -1,14 +1,17 @@
 import { useState } from "react";
 import ExpandedMovie from "./ExpandedMovie";
 import * as action from "../Modules/Movies";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 
 function MovieCardList({ movie, index, watchListMovies }) {
   const [showMovieDetails, setShowMovieDetails] = useState(false);
 
-  const { watchlist } = useSelector((state) => ({
-    watchlist: state.watchlist.watchlist,
-  }));
+  const { watchlist } = useSelector(
+    (state) => ({
+      watchlist: state.watchlist.watchlist,
+    }),
+    shallowEqual
+  );
 
   const findMovie = watchlist.find((element) => {
     return element.id === movie.id;
@@ -36,12 +39,12 @@ function MovieCardList({ movie, index, watchListMovies }) {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     ) : (
@@ -49,13 +52,13 @@ function MovieCardList({ movie, index, watchListMovies }) {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           d="m4.5 12.75 6 6 9-13.5"
                         />
                       </svg>

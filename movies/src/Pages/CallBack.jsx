@@ -7,15 +7,25 @@ function CallBack() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const setLocalStorage = async (token, token1) => {
+    localStorage.setItem(token, token1);
+  };
+
+  const navigattion = async () => {
+    navigate("/");
+  };
   const getAccessToken = async (requestToken) => {
+    const data = {
+      request_token: requestToken,
+    };
     try {
       const respone = await axios.post(
-        `https://api.themoviedb.org/3/authentication/session/new?api_key=efe9113f3d59fb2b004bd1d702a26064`,
-        { request_token: requestToken }
+        `https://api.themoviedb.org/3/authentication/session/new?api_key=9ddc2f1438cb3e4e1cbcf0137b3dd7f7`,
+        data
       );
-      const { session_id } = respone.data;
-      localStorage.setItem("session_id", session_id);
-      navigate("/");
+      const { session_id } = await respone.data;
+      await setLocalStorage("session_id", session_id);
+      await navigattion();
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +37,7 @@ function CallBack() {
     if (requestToken) {
       getAccessToken(requestToken);
     }
-  },[location , navigate]);
+  }, []);
 
   return (
     <>

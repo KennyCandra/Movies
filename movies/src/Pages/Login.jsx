@@ -6,13 +6,17 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const navigate = useNavigate();
   const request_token = localStorage.getItem("request_token") || null;
+  const sessionD = localStorage.getItem("session_id") || null;
+  async function setLocalStorage(token1, token) {
+    localStorage.setItem(token1, token);
+  }
   const getRequestToken = async () => {
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/authentication/token/new?api_key=efe9113f3d59fb2b004bd1d702a26064`
+        `https://api.themoviedb.org/3/authentication/token/new?api_key=9ddc2f1438cb3e4e1cbcf0137b3dd7f7`
       );
-      const { request_token } = response.data;
-      localStorage.setItem("request_token", request_token);
+      const { request_token } = await response.data;
+      await setLocalStorage("request_token", request_token);
       window.location.href = `https://www.themoviedb.org/authenticate/${request_token}?redirect_to=http://localhost:5173/callback`;
     } catch (err) {
       console.error(err);
@@ -20,13 +24,13 @@ function Login() {
   };
 
   useEffect(() => {
-    if (request_token !== null) {
+    if (request_token && sessionD) {
       navigate("/");
     }
-  }, [request_token]);
+  }, [request_token, sessionD]);
 
   return (
-    <div className="bg-loginBackGround h-full" onClick={() => console.log(request_token)}>
+    <div className="bg-loginBackGround h-full">
       <div className=" bg-white max-w-[1080px] flex m-auto">
         <section className="right-section flex flex-col justify-center flex-wrap items-center">
           <h1 className="font-bold">Sign In</h1>
@@ -99,7 +103,3 @@ function Login() {
 }
 
 export default Login;
-
-//   <button className="4" onClick={getRequestToken}>
-//     Login!
-//   </button>

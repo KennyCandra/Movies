@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { fetchList, getMyLists } from "../Modules/Movies";
-import { useSelector } from "react-redux";
+import { getMyLists } from "../Modules/Movies";
+import { shallowEqual, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import List from "./List";
 
 function AsideLists() {
   const navigate = useNavigate();
-  const { watchlist } = useSelector((state) => ({
-    watchlist: state.watchlist.watchlist,
-  }));
+  const { watchlist, user } = useSelector(
+    (state) => ({
+      watchlist: state.watchlist.watchlist,
+      user: state.user,
+    }),
+    shallowEqual
+  );
   const [myList, setMyLists] = useState([]);
-
   const location = useLocation();
+
   const fetchLists = async () => {
-    const lists = await getMyLists();
+    const lists = await getMyLists(user);
     setMyLists(lists);
   };
 
@@ -87,13 +91,13 @@ function AsideLists() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-7"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m8.25 4.5 7.5 7.5-7.5 7.5"
                 />
               </svg>

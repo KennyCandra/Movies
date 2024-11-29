@@ -7,14 +7,9 @@ function List({ list }) {
   const [movie, setMovie] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await fetchList(list.id);
-        setMovie(data.items);
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await fetchList(list.id);
+      setMovie(response.items);
     };
-
     fetchData();
   }, []);
   return (
@@ -29,7 +24,7 @@ function List({ list }) {
         >
           {list.description}
         </h2>
-        <p>{list.item_count === 1 ? '1 movie' : list.item_count + ' movies'}</p>
+        <p>{list.item_count === 1 ? "1 movie" : list.item_count + " movies"}</p>
       </div>
       <div className="w-[72px] h-[107px] overflow-hidden">
         {movie.length !== 0 ? (

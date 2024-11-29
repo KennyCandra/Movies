@@ -1,37 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { addRatingAPI } from "../Modules/Movies";
 
-function Rating({ title, setRating, id, rating1, ratingRes }) {
+function Rating({ movie, setRating, ratingModal, ratingRes }) {
   const rating = Array(10).fill(5);
-  const [hoverIndex, setHoverIndex] = useState(ratingRes.value * 10 - 1 || -1);
-  const [ratingValue, setRatingValue] = useState(ratingRes.value * 10|| 0);
+  const [hoverIndex, setHoverIndex] = useState(ratingRes.value - 1 || -1);
+  const [ratingValue, setRatingValue] = useState(ratingRes.value || 0);
 
   useEffect(() => {
-    if (rating1) {
+    if (ratingModal) {
       document.body.classList.add("overflow-y-hidden");
     }
-  }, [rating1]);
+  }, [ratingModal]);
 
   const possibleScale = [
+    "scale - 1",
+    "scale - 2",
+    "scale - 3",
+    "scale - 4",
+    "scale - 5",
+    "scale - 6",
+    "scale - 7",
+    "scale - 8",
+    "scale - 9",
     "scale - 10",
-    "scale - 20",
-    "scale - 30",
-    "scale - 40",
-    "scale - 50",
-    "scale - 60",
-    "scale - 70",
-    "scale - 80",
-    "scale - 90",
-    "scale - 100",
   ];
 
   const handleClick = (value) => {
-    setRatingValue(value * 10);
+    setRatingValue(value);
     setHoverIndex(value - 1);
   };
 
-  const addRating = (id, value) => {
-    addRatingAPI(id, ratingValue / 10);
+  const addRating = async (id) => {
+    await addRatingAPI(id, ratingValue);
     setRating(false);
     document.body.classList.remove("overflow-y-hidden");
   };
@@ -51,12 +51,12 @@ function Rating({ title, setRating, id, rating1, ratingRes }) {
           {" "}
           <span
             className={`absolute top-[35%] ${
-              ratingValue === 10 ? "text-2xl left-[45%]" : "text-3xl"
+              ratingValue === 1 ? "text-2xl left-[45%]" : "text-3xl"
             } font-bold ${
-              ratingValue === 100 ? "left-[35%]" : "left-[42%]"
+              ratingValue === 10 ? "left-[35%]" : "left-[42%]"
             } z-50 text-black`}
           >
-            {ratingValue === false ? "?" : ratingValue / 10}
+            {ratingValue === false ? "?" : ratingValue}
           </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -73,8 +73,8 @@ function Rating({ title, setRating, id, rating1, ratingRes }) {
             />
           </svg>
         </h1>
-        <h1 className="text-yellow-400 py-4 font-bold">RATE THIS</h1>
-        <h1>{title}</h1>
+        <h1 className="text-yellow-400 py-4 font-bold" onClick={() => console.log(ratingValue)}>RATE THIS</h1>
+        <h1>{movie.title}</h1>
         <div className="flex">
           {rating.map((_, index) => {
             return (
@@ -106,7 +106,7 @@ function Rating({ title, setRating, id, rating1, ratingRes }) {
           className={`m-4 px-4 w-[288px] h-9 rounded-full ${
             ratingValue === 0 ? "bg-gray-600" : "bg-yellow-500"
           }`}
-          onClick={() => addRating(id, ratingValue / 10)}
+          onClick={() => addRating(movie.id, ratingValue)}
         >
           <span className="text-xl">Rate</span>
         </button>

@@ -48,8 +48,8 @@ function Reviews({ reviews }) {
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
                             d="M408.128 99C421.748 99 434.433 92.0691 441.79 80.6065L493.241 0.446386C493.365 0.253423 493.229 0 493 0V0H30C13.4315 0 0 13.4315 0 30V69C0 85.5685 13.4315 99 30 99H408.128Z"
                             fill="#F5C518"
                           />

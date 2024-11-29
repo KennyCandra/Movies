@@ -14,13 +14,10 @@ function MoviePage() {
 
   useEffect(() => {
     const fetchMovie = async () => {
-      try {
-        const response = await action.MoviePage(id);
-        setMovie(response);
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await action.MoviePage(id);
+      setMovie(response);
     };
+
     const fetchReviews = async () => {
       const review = await action.fetchReviews(id);
       setReviews(review);
@@ -32,15 +29,11 @@ function MoviePage() {
 
   useEffect(() => {
     const fetchMovieRating = async () => {
-      try {
-        const ratingResponse = await action.fetchRating(id);
-        setRating(ratingResponse);
-      } catch (error) {
-        console.error(error);
-      }
+      const ratingResponse = await action.fetchRating(id);
+      setRating(ratingResponse);
     };
     fetchMovieRating();
-  }, [rating]);
+  }, [ratingModal]);
 
   if (movie === null) return <Loader />;
 
@@ -156,10 +149,9 @@ function MoviePage() {
       <Reviews reviews={reviews} />
       {ratingModal && (
         <Rating
-          title={movie.title}
+          movie={movie}
           setRating={setRatingModal}
-          id={movie.id}
-          rating1={ratingModal}
+          ratingModal={ratingModal}
           ratingRes={rating.rated}
         />
       )}

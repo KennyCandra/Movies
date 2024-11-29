@@ -12,10 +12,6 @@ function MovieCard({ id, movie, poster, title, score }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(myList);
-  }, [myList]);
-
-  useEffect(() => {
     const handleClickOutSide = (event) => {
       if (btnRef.current && !btnRef.current.contains(event.target)) {
         setFeatures(false);

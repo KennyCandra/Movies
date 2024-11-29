@@ -13,7 +13,6 @@ export const userSlice = createSlice({
     },
     userlogout : (state) => {
       state.data = null
-      console.log(state.data)
     }
   },
 });

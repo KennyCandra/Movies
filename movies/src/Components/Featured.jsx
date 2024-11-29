@@ -1,29 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as movie from "../Modules/Movies";
 import { addMovie } from "../redux/watchListSlice";
 
 function Featured() {
-  const [list, setList] = useState([]);
   const containerRef = useRef(null);
-  const navigate = useNavigate();
-  const { watchlist } = useSelector((state) => state.watchlist);
   const dispatch = useDispatch();
+  const [list, setList] = useState([]);
+  const navigate = useNavigate();
+  const { user, watchlist } = useSelector(
+    (state) => ({
+      user: state.user?.data,
+      watchlist: state.watchlist.watchlist,
+    }),
+    shallowEqual
+  );
 
   useEffect(() => {
     const fetchData = async () => {
-      const headers = {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODU2NjQ1Mi4xNjUwNDUsInN1YiI6IjY2ZmJlMjgxZjJiOWM5N2MxZGQ2MzY3MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.46ZdohKOAXxABXt9pV-dNn23WiLnYXGz-L2sHuq-MSU",
-      };
-
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=en-US&page=3&sort_by=popularity.desc`,
-        { headers: headers }
-      );
-      setList(response.data.results);
+      const response = await movie.fetchDataMovie(null, null, 1);
+      setList(response);
     };
     fetchData();
   }, []);
@@ -42,11 +39,11 @@ function Featured() {
     }
   };
 
-  const addToWatchlist = (movie1, id) => {
-    const wantedToAddMovie = watchlist.find((movie) => movie.id === id);
+  const addToWatchlist = (movie1, user) => {
+    const wantedToAddMovie = watchlist.find((movie) => movie.id === movie1.id);
     if (!wantedToAddMovie) {
       dispatch(addMovie(movie1));
-      movie.addToWatchlist(id);
+      movie.addToWatchlist(movie1.id, user.id);
     } else {
       console.log(wantedToAddMovie);
     }
@@ -56,7 +53,12 @@ function Featured() {
     <div className="flex mt-10 flex-col justify-center bg-black relative">
       <div className="flex flex-wrap justify-around content-around gap-5 max-w-[1280px] m-auto">
         <section className="w-[850px] h-[620px] relative px-3 flex flex-col">
-          <h1 className="text-[#f5c518] font-bold text-3xl mb-6">Movies</h1>
+          <h1
+            className="text-[#f5c518] font-bold text-3xl mb-6"
+            onClick={() => console.log(user.id)}
+          >
+            Movies
+          </h1>
           <button
             onClick={handleScrollClickLeft}
             className="absolute top-[40%] z-50 bg-gray-700 opacity-50 hover:opacity-100 size-9 flex flex-wrap justify-center content-center"
@@ -120,7 +122,7 @@ function Featured() {
                   </div>
                   <div className="flex flex-col">
                     <h1 className="w-[200px]">{item.title}</h1>
-                    <button onClick={() => addToWatchlist(item, item.id)}>
+                    <button onClick={() => addToWatchlist(item, user)}>
                       + Watchlist
                     </button>
                     <button>{`< Trailer`}</button>
