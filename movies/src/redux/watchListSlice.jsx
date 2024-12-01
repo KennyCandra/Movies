@@ -13,7 +13,6 @@ export const watchListSlice = createSlice({
     },
     addMovie: (state, action) => {
       state.watchlist = [...state.watchlist, action.payload];
-      console.log(state.watchlist);
     },
   },
 });

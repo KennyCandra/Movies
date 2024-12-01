@@ -24,7 +24,6 @@ function App() {
             </>
           }
         />
-        <Route path="/callBack" element={<CallBack />} />
         <Route path="/header" element={<Header />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/watchlist" element={<WatchList />} />
@@ -40,6 +39,7 @@ function App() {
         />
         <Route path="/lists/:id" element={<Lists />} />
       </Route>
+      <Route path="/callBack" element={<CallBack />} />
       <Route
         path="/login"
         element={

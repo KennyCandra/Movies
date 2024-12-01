@@ -12,18 +12,20 @@ function Rating({ movie, setRating, ratingModal, ratingRes }) {
     }
   }, [ratingModal]);
 
-  const possibleScale = [
-    "scale - 1",
-    "scale - 2",
-    "scale - 3",
-    "scale - 4",
-    "scale - 5",
-    "scale - 6",
-    "scale - 7",
-    "scale - 8",
-    "scale - 9",
-    "scale - 10",
-  ];
+  useEffect(() => {
+    const possibleScale = [
+      "scale-1",
+      "scale-2",
+      "scale-3",
+      "scale-4",
+      "scale-5",
+      "scale-6",
+      "scale-7",
+      "scale-8",
+      "scale-9",
+      "scale-10",
+    ];
+  });
 
   const handleClick = (value) => {
     setRatingValue(value);
@@ -73,7 +75,12 @@ function Rating({ movie, setRating, ratingModal, ratingRes }) {
             />
           </svg>
         </h1>
-        <h1 className="text-yellow-400 py-4 font-bold" onClick={() => console.log(ratingValue)}>RATE THIS</h1>
+        <h1
+          className="text-yellow-400 py-4 font-bold"
+          onClick={() => console.log(ratingValue)}
+        >
+          RATE THIS
+        </h1>
         <h1>{movie.title}</h1>
         <div className="flex">
           {rating.map((_, index) => {

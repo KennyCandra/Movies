@@ -1,21 +1,26 @@
 import React from "react";
+import { footerLogos } from "../variables/loginMethods";
 
 function Footer() {
-  const socialIcons = Array(5).fill(",");
-
   return (
     <footer className="bg-black flex flex-col justify-center py-4 w-full h-[368px]">
       <section className="flex flex-wrap justify-center gap-2">
         <div className="h-28 w-[400px] border rounded-lg border-gray-300 flex flex-col justify-center items-center">
           <h1 className="text-white">Follow IMDb on Social</h1>
           <div className="flex justify-evenly w-full">
-            {socialIcons.map((icon, index) => (
-              <div
+            {footerLogos.map((icon, index) => (
+              <a
+                target="_blank"
+                href={icon.url}
                 key={index}
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-black cursor-pointer hover:bg-imgHover transition duration-700"
               >
-                <img src="/images/Facebook-logo.png" className="w-6 h-6" alt={`Social icon ${index + 1}`} />
-              </div>
+                <img
+                  src={icon.src}
+                  className="w-6 h-6"
+                  alt={`Social icon ${index + 1}`}
+                />
+              </a>
             ))}
           </div>
         </div>

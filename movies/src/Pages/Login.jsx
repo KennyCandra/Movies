@@ -38,11 +38,8 @@ function Login() {
             {loginMethods.map((method) => {
               return (
                 <div key={method.name} className="border m-3">
-                  <button className="flex p-1">
-                    <img
-                      src="/images/Facebook-logo.png"
-                      className="w-[64px] h-[32px]"
-                    />
+                  <button className="flex p-1 space-x-2">
+                    <img src={method.src} className="w-[64px] h-[32px]" />
                     <h1>Sign In With {method.name} </h1>
                   </button>
                 </div>
