@@ -262,7 +262,7 @@ export const searching = async (value) => {
   }
 };
 
-export const createList = async () => {
+export const createList = async (values) => {
   try {
     const response = await axios.post(
       `https://api.themoviedb.org/3/list?session_id=${sessionD}`,
@@ -271,7 +271,6 @@ export const createList = async () => {
         headers: headers,
       }
     );
-    setCreateNewList(false);
   } catch (error) {
     console.error(error);
   }

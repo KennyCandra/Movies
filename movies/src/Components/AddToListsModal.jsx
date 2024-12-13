@@ -1,10 +1,12 @@
 import { useRef, useEffect, useState } from "react";
 import { fetchList, getMyLists } from "../Modules/Movies";
 import AddToListLists from "./AddToListLists";
+import { useNavigate } from "react-router-dom";
 
 function AddToListsModal({ setListsModal, movie, user }) {
   const containerRef = useRef(null);
   const [myList, setMyLists] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.body.classList.add("overflow-y-hidden");
@@ -57,7 +59,7 @@ function AddToListsModal({ setListsModal, movie, user }) {
 
         <div className="bg-[#1f1f1f] pt-2 pb-[60px] divide-y-[1px] divide-gray-400 ">
           <div className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center">
-            <div className="grow h-full flex">
+            <div className="grow h-full flex" onClick={() => navigate('/lists/watchlist')}>
               <h1 className="self-center">View Watchlist</h1>
             </div>
 

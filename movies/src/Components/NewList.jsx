@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createList } from "../Modules/Movies";
 
 function NewList({ setCreateNewList }) {
@@ -10,9 +10,13 @@ function NewList({ setCreateNewList }) {
 
   const createMyOwnList = async (e) => {
     e.preventDefault();
-    await createList();
+    await createList(values);
+    setCreateNewList(false);
   };
 
+  useEffect(() => {
+    console.log(values)
+  },[values])
   return (
     <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 text-white flex justify-center items-center z-50 flex-col">
       <div className="bg-white text-black w-full max-w-lg p-4 rounded-lg shadow-lg">

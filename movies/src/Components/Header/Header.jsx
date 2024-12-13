@@ -23,9 +23,9 @@ function Header() {
 
   const logOut = () => {
     localStorage.clear();
+    navigate("/login");
     dispatch(userlogout());
     dispatch(setWatchList([]));
-    navigate("/login");
   };
 
   useEffect(() => {
