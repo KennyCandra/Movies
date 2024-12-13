@@ -73,7 +73,7 @@ function Header() {
           <div className="text-white self-center">All</div>
           <div className="flex grow overflow-hidden">
             <input
-              className="h-5 px-3 py-4 rounded-md grow overflow-hidden"
+              className="h-5 px-3 py-4 rounded-md overflow-hidden"
               placeholder="Search for your favourite Movie"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
