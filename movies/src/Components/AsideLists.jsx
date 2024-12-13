@@ -28,13 +28,13 @@ function AsideLists() {
   return (
     <aside className="w-[412px] flex flex-col gap-5">
       <div>
-        <h1 className="text-3xl font-bold mb-3 before:bg-yellow-500 before:h-full relative before:w-1 before:rounded-sm before:absolute ">
+        <h1 className="text-3xl font-bold mb-3 relative before:w-1 before:rounded-sm before:absolute  before:bg-yellow-500 before:h-full ">
           <span className="pl-3">More To explore </span>
         </h1>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col flex-wrap justify-between h-[95px] w-[370px] border pl-5 py-2 cursor-pointer hover:bg-gray-100 content-between rounded-md overflow-hidden px-2 border-black ">
             <div className="flex flex-col justify-between h-full">
-              <h2 className="hover:underline">your Check-ins</h2>
+              <h2 onClick={() => navigate('/lists/favourteList')} className="hover:underline">your favourite list</h2>
               <p className="text-xs font-normal text-gray-400">
                 Titles you are or have watched
               </p>
@@ -62,7 +62,7 @@ function AsideLists() {
                 onClick={() =>
                   location.pathname === "/watchlist"
                     ? null
-                    : navigate("/watchlist")
+                    : navigate("/lists/watchlist")
                 }
                 className="hover:underline"
               >

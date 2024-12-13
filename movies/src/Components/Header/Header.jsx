@@ -117,7 +117,7 @@ function Header() {
           <p
             className="hidden lg:block text-white cursor-pointer hover:bg-gray-700 transition-all px-3 rounded-full"
             onClick={() =>
-              location.pathname === "/login" ? null : navigate("/watchlist")
+              location.pathname === "/login" ? null : navigate("/lists/watchlist")
             }
           >
             Watch List
@@ -129,7 +129,7 @@ function Header() {
             className="text-white hidden md:block cursor-pointer hover:bg-gray-700 transition-all px-3 rounded-full relative"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={() => console.log(user)}
+            onClick={() => navigate('/user')}
           >
             {user ? `${user.username}` : `Sign In`}
             {hovered ? (

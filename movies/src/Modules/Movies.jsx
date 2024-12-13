@@ -10,22 +10,32 @@ const headers = {
 
 const sessionD = localStorage.getItem("session_id" || null);
 
-export const addRatingAPI = async (id, value) => {
-  const data = { value: value };
+export const addRating = async (id, rating) => {
+  const data = { value: rating };
   try {
     const response = await axios.post(
       `https://api.themoviedb.org/3/movie/${id}/rating?session_id=${sessionD}`,
       data,
       { headers: headers }
     );
-    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
   }
 };
 
-// DONE!!
+export const topThisWeek = async () => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/top_rated`,
+      { headers: headers }
+    );
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchRating = async (id) => {
   try {
     const response = await axios.get(
@@ -38,7 +48,6 @@ export const fetchRating = async (id) => {
   }
 };
 
-// DONE!!
 export const removeRating = async (id) => {
   try {
     const response = await axios.delete(
@@ -51,8 +60,8 @@ export const removeRating = async (id) => {
   }
 };
 
-export const addToFavoriteList = async (movieId, id) => {
-  let url1 = `https://api.themoviedb.org/3/account/${id}/favorite?session_id=${sessionD}`;
+export const addToFavoriteList = async (movieId, user) => {
+  let url1 = `https://api.themoviedb.org/3/account/${user.id}/favorite?session_id=${sessionD}`;
   const data = {
     media_type: "movie",
     media_id: movieId,
@@ -79,7 +88,6 @@ export const addToWatchlist = async (movieId, user) => {
       data,
       { headers: headers }
     );
-    console.log(`added to watch list`);
     return response;
   } catch (error) {
     console.error(error);
@@ -98,9 +106,8 @@ export const fetchReviews = async (id) => {
   }
 };
 
-export const removeFromWatchList = async (movieId) => {
-  let url1 =
-    "https://api.themoviedb.org/3/account/2147483647/watchlist?session_id=bc5fbe1bb70203d72d6423bfbb4207be1da66066";
+export const removeFromWatchList = async (movieId, user) => {
+  let url1 = `https://api.themoviedb.org/3/account/${user.id}/watchlist?session_id=${sessionD}`;
   const data = {
     media_type: "movie",
     media_id: movieId,
@@ -109,7 +116,7 @@ export const removeFromWatchList = async (movieId) => {
 
   try {
     const response = await axios.post(url1, data, { headers: headers });
-    window.location.reload();
+    return response;
   } catch (error) {
     console.error(error);
   }
@@ -132,6 +139,19 @@ export const fetchWatchList = async (user) => {
   try {
     const response = await axios.get(
       `https://api.themoviedb.org/3/account/${user.id}/watchlist/movies?session_id=${sessionD}`,
+      { headers: headers }
+    );
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchFavouriteList = async (user) => {
+  if (sessionD === null) return;
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/account/${user.id}/favorite/movies?session_id=${sessionD}&language=en-US&page=1&sort_by=created_at.asc`,
       { headers: headers }
     );
     return response.data.results;
@@ -216,9 +236,12 @@ export const search = async (sort_by, with_genres, num) => {
 
 export const fetchList = async (id) => {
   try {
-    const data = await axios.get(`https://api.themoviedb.org/3/list/${id}`, {
-      headers: headers,
-    });
+    const data = await axios.get(
+      `https://api.themoviedb.org/3/list/${id}?session_id=${sessionD}`,
+      {
+        headers: headers,
+      }
+    );
     return data.data;
   } catch (error) {
     console.error(error);
@@ -234,6 +257,49 @@ export const searching = async (value) => {
       }
     );
     return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createList = async () => {
+  try {
+    const response = await axios.post(
+      `https://api.themoviedb.org/3/list?session_id=${sessionD}`,
+      values,
+      {
+        headers: headers,
+      }
+    );
+    setCreateNewList(false);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const addToList = async (id, MovieD) => {
+  const data = { media_id: MovieD.id };
+  try {
+    const response = await axios.post(
+      `https://api.themoviedb.org/3/list/${id}/add_item?session_id=${sessionD}`,
+      data,
+      { headers: headers }
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const removeFromList = async (id, MovieD) => {
+  const data = { media_id: MovieD.id };
+  try {
+    const response = await axios.post(
+      `https://api.themoviedb.org/3/list/${id}/remove_item?session_id=${sessionD}`,
+      data,
+      { headers: headers }
+    );
+    return response;
   } catch (error) {
     console.error(error);
   }

@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import FeaturedMovieCard from "./FeaturedMovieCard";
 import * as movie from "../Modules/Movies";
-import { addMovie } from "../redux/watchListSlice";
 
 function Featured() {
   const containerRef = useRef(null);
-  const dispatch = useDispatch();
   const [list, setList] = useState([]);
-  const navigate = useNavigate();
   const { user, watchlist } = useSelector(
     (state) => ({
       user: state.user?.data,
@@ -19,7 +16,7 @@ function Featured() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await movie.fetchDataMovie(null, null, 1);
+      const response = await movie.topThisWeek();
       setList(response);
     };
     fetchData();
@@ -27,159 +24,76 @@ function Featured() {
 
   const handleScrollClickLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft -= 850;
-      containerRef.current.style.scrollBehavior = "smooth";
+      if (window.innerWidth > 1280) {
+        containerRef.current.scrollLeft -= 1280;
+      } else {
+        containerRef.current.scrollLeft -= window.innerWidth;
+      }
     }
   };
 
   const handleScrollClickRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft += 850;
-      containerRef.current.style.scrollBehavior = "smooth";
+      if (window.innerWidth > 1280) {
+        containerRef.current.scrollLeft += 1280;
+      } else {
+        containerRef.current.scrollLeft += window.innerWidth;
+      }
     }
   };
 
-  const addToWatchlist = (movie1, user) => {
-    const wantedToAddMovie = watchlist.find((movie) => movie.id === movie1.id);
-    if (!wantedToAddMovie) {
-      dispatch(addMovie(movie1));
-      movie.addToWatchlist(movie1.id, user.id);
-    } else {
-      console.log(wantedToAddMovie);
-    }
-  };
-
+  const watchListInFeatured = watchlist?.filter((item1) =>
+    list.some((item2) => item1.id === item2.id)
+  );
   return (
-    <div className="flex mt-10 flex-col justify-center bg-black relative">
-      <div className="flex flex-wrap justify-around content-around gap-5 max-w-[1280px] m-auto">
-        <section className="w-[850px] h-[620px] relative px-3 flex flex-col">
-          <h1
-            className="text-[#f5c518] font-bold text-3xl mb-6"
-            onClick={() => console.log(user.id)}
+    <div className="py-10 h-auto bg-black relative w-full">
+      <div className="px-3 relative lg:w-[1013px] xl:w-[1280px] m-auto">
+        <h1 className="text-[#f5c518] font-bold px-6 text-3xl mb-5">
+          Top Rated Movies
+        </h1>
+        <div
+          className="grid grid-flow-col gap-3 my-1 overflow-hidden snap-x snap-mandatory scroll-smooth"
+          ref={containerRef}
+        >
+          {list?.map((movie) => (
+            <FeaturedMovieCard
+              key={movie.id}
+              movie={movie}
+              user={user}
+              watchlist={watchlist}
+              watchListInFeatured={watchListInFeatured}
+            />
+          ))}
+        </div>
+        <button
+          className="absolute z-50 top-[40%] border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5 rotate-180"
+          onClick={handleScrollClickLeft}
+        >
+          <svg
+            className="invert"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
           >
-            Movies
-          </h1>
-          <button
-            onClick={handleScrollClickLeft}
-            className="absolute top-[40%] z-50 bg-gray-700 opacity-50 hover:opacity-100 size-9 flex flex-wrap justify-center content-center"
+            <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
+          </svg>
+        </button>
+        <button
+          className="absolute z-50 top-[40%] right-3 border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5"
+          onClick={handleScrollClickRight}
+        >
+          <svg
+            className="invert"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className="invert rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
-            </svg>
-          </button>
-          <button
-            onClick={handleScrollClickRight}
-            className="absolute top-[40%] right-2 opacity-50 hover:opacity-100 z-50 size-9 flex flex-wrap justify-center content-center bg-gray-700"
-          >
-            <svg
-              className="invert"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
-            </svg>
-          </button>
-          <div
-            className="flex gap-[12.5px] flex-row w-[830px] overflow-x-scroll h-[528px] border"
-            ref={containerRef}
-          >
-            {list?.map((item) => (
-              <div
-                className="w-[200px] h-[528px] relative border"
-                key={item.title}
-              >
-                <div className="h-[290px] w-[195px] flex justify-center content-center flex-wrap">
-                  <button
-                    onClick={() => movie.addToFavoriteList(item.id)}
-                    className="absolute top-0 left-0"
-                  >
-                    <div className="relative w-8 h-10 bg-gray-500 opacity-50 hover:opacity-100 hover:bg-gray-800 rounded-t-md rounded-bl-md overflow-hidden flex items-center justify-center">
-                      <span className="text-white text-xl font-bold">+</span>
-                      <div className="absolute bottom-0 left-0 overflow-hidden">
-                        <div className="bg-brown-600 rotate-45 transform origin-top-left"></div>
-                      </div>
-                    </div>
-                  </button>
-                  <img
-                    className="h-[290px] w-[200px]"
-                    src={`https://image.tmdb.org/t/p/original/${item.poster_path}`}
-                  />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex gap-10 mt-3">
-                    <p>⭐{item.vote_average}</p>
-                    <button className="hover:bg-white cursor-pointer">
-                      ⭐
-                    </button>
-                  </div>
-                  <div className="flex flex-col">
-                    <h1 className="w-[200px]">{item.title}</h1>
-                    <button onClick={() => addToWatchlist(item, user)}>
-                      + Watchlist
-                    </button>
-                    <button>{`< Trailer`}</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section className="right-section h-[620px] w-[405px]">
-          <h1
-            className="text-[#f5c518] font-bold text-3xl mb-6"
-            onClick={() => navigate("/watchlist")}
-          >
-            favourite List
-          </h1>
-          <div className="flex flex-col gap-2 bg-[#121212] h-[528px] overflow-scroll">
-            {watchlist?.map((list) => {
-              return (
-                <div className="flex gap-2 px-4 h-[150px]" key={list.id}>
-                  <section>
-                    <div>
-                      <img
-                        src={`https://image.tmdb.org/t/p/original/${list.poster_path}`}
-                        className="w-[90px] h-[130px]"
-                      />
-                    </div>
-                  </section>
-                  <section className=" w-[75%] flex flex-col content-center justify-center gap-1">
-                    <img
-                      src="/images/player-icon.svg"
-                      className="size-10 invert"
-                    />
-                    <h1 className="text-white">{list.title}</h1>
-                    <span className="text-white w-full text-ellipsis overflow-hidden whitespace-nowrap">
-                      {list.overview}
-                    </span>
-                    <div className="flex content-center flex-wrap gap-2">
-                      <p className="text-white">{list.vote_count}</p>
-                      <img
-                        src="/images/like-svgrepo-com.svg"
-                        className="size-4 self-center invert hover:filter-none transition"
-                      />
-                    </div>
-                  </section>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+            <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
+          </svg>
+        </button>
       </div>
-      <button
-        className="self-center mb-10 flex bg-yellow-600 hover:bg-yellow-700 hover:bg- text-white transition px-10 py-3 rounded-lg"
-        onClick={() => navigate("/movies")}
-      >
-        Discover More Movies from Here!
-      </button>
     </div>
   );
 }

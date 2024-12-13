@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios"; // Ensure axios is imported if not already
+import { createList } from "../Modules/Movies";
 
 function NewList({ setCreateNewList }) {
   const [values, setValues] = useState({
@@ -10,24 +10,7 @@ function NewList({ setCreateNewList }) {
 
   const createMyOwnList = async (e) => {
     e.preventDefault();
-    const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZmU5MTEzZjNkNTlmYjJiMDA0YmQxZDcwMmEyNjA2NCIsIm5iZiI6MTcyODg1MDg1MC4xMzkzMSwic3ViIjoiNjZmYmUyODFmMmI5Yzk3YzFkZDYzNjcxIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.cscRHnA4UIi60yO1sS6mac9XrSPVkgFDFp1NahVeffs",
-    };
-
-    try {
-      const response = await axios.post(
-        `https://api.themoviedb.org/3/list`,
-        values,
-        {
-          headers: headers,
-        }
-      );
-      console.log(response);
-      setCreateNewList(false);
-    } catch (error) {
-      console.error(error);
-    }
+    await createList();
   };
 
   return (
