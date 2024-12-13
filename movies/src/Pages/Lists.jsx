@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchFavouriteList, fetchList } from "../Modules/Movies";
+import { fetchFavouriteList, fetchList, fetchWatchList } from "../Modules/Movies";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import MovieCardList from "../Components/MovieCardList";
@@ -39,12 +39,26 @@ function Lists() {
     }
   };
 
+  const fetchWatList = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchWatchList(user);
+      setList(data);
+      setMovies(data);
+      console.log(data)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchingFunction = async () => {
       if (id === "favourteList") {
         fetchUserList();
       } else if (id === "watchlist") {
-        setMovies(watchlist);
+        fetchWatList();
       } else {
         fetchData();
       }
@@ -110,6 +124,7 @@ function Lists() {
                   key={movie.id}
                   movie={movie}
                   index={index}
+                  setMovies={setMovies}
                   watchListMovies={movies}
                 />
               );

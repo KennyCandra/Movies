@@ -4,21 +4,24 @@ import * as action from "../Modules/Movies";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { addMovie, removeMovie } from "../redux/watchListSlice";
 
-function MovieCardList({ movie, index, watchListMovies }) {
+function MovieCardList({ movie, index, watchListMovies, setMovies }) {
   const [showMovieDetails, setShowMovieDetails] = useState(false);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [findMovie, setFindMovie] = useState(
+    watchListMovies.filter((item1) => item1.id === movie.id) || []
+  );
 
   const addToMovieToWatchList = async (movie1, user) => {
+    const wantedToAddMovie = watchlist.find((movie) => movie.id === movie1.id);
     try {
       setLoading(true);
-      const wantedToAddMovie = watchlist.find(
-        (movie) => movie.id === movie1.id
-      );
       if (!wantedToAddMovie) {
+        setFindMovie(movie);
         dispatch(addMovie(movie1));
         await action.addToWatchlist(movie1.id, user);
       } else {
+        setFindMovie([]);
         dispatch(removeMovie(movie1.id));
         await action.removeFromWatchList(movie1.id, user);
       }
@@ -29,16 +32,13 @@ function MovieCardList({ movie, index, watchListMovies }) {
     }
   };
 
-  const { watchlist, user } = useSelector(
+  const { user, watchlist } = useSelector(
     (state) => ({
-      watchlist: state.watchlist.watchlist,
       user: state.user.data,
+      watchlist: state.watchlist.watchlist,
     }),
     shallowEqual
   );
-
-  const findMovie =
-    watchListMovies.filter((item1) => item1.id === movie.id) || null;
 
   return (
     <>
@@ -90,7 +90,10 @@ function MovieCardList({ movie, index, watchListMovies }) {
               />
             </div>
             <div>
-              <h1 className="font-bold">
+              <h1
+                className="font-bold"
+                onClick={() => navigate(`/movie/${movie.id}`)}
+              >
                 {index + 1}. {movie.title}
               </h1>
               <p className="font-light">{movie.release_date}</p>

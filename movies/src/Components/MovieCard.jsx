@@ -14,9 +14,10 @@ function MovieCard({ movie, poster, title, score }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user } = useSelector(
+  const { user, watchlist } = useSelector(
     (state) => ({
       user: state.user?.data,
+      watchlist: state.watchlist.watchlist,
     }),
     shallowEqual
   );
@@ -33,11 +34,13 @@ function MovieCard({ movie, poster, title, score }) {
     };
   }, []);
 
-  const addToMovieToWatchList = async (movie1) => {
+  const findMovie = watchlist.filter((item1) => item1.id === movie.id) || null;
+
+  const addToMovieToWatchList = async (movie1, user) => {
     try {
       setLoading(true);
       const wantedToAddMovie = watchlist.find(
-        (movie1) => movie1.id === movie1.id
+        (movie) => movie.id === movie1.id
       );
       if (!wantedToAddMovie) {
         dispatch(addMovie(movie1));
@@ -58,7 +61,7 @@ function MovieCard({ movie, poster, title, score }) {
       <div className="border-[1px] rounded-lg overflow-hidden border-black w-[10vw] aspect-[1/2.5] md:aspect-[1/2.2] lg:aspect-[1/2] xl:aspect-[1/1.9] relative">
         <button
           className="absolute top-0 left-0 z-10"
-          onClick={() => addToMovieToWatchList(movie)}
+          onClick={() => addToMovieToWatchList(movie, user)}
         >
           <div
             className={`relative w-8 h-10 rounded-md overflow-hidden flex items-center justify-center ${

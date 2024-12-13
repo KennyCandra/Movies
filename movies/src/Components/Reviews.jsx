@@ -20,7 +20,7 @@ function Reviews({ reviews }) {
   };
   return (
     <div className="my-5 w-full xl:max-w-[1280px] lg:max-w-[1024px] m-auto ">
-      <div className="xl:w-[860px] xl:h-[490px]">
+      <div className="xl:w-[860px] ">
         <section className="flex justify-between mb-4">
           <h3 className="pl-3 text-3xl font-bold">
             User Reviews

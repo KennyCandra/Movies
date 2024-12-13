@@ -47,7 +47,7 @@ function Header() {
   return (
     <nav className="h-12 w-full bg-navBg">
       <div className="max-w-[1280px] flex h-full justify-between gap-2 content-center m-auto px-2">
-        <div className="flex flex-wrap lg:flex-row flex-row-reverse items-center justify-center gap-5">
+        <div className="flex flex-wrap lg:flex-row flex-row-reverse items-center justify-center gap-5 overflow-hidden">
           <img
             src="/images/imbd.png"
             className="w-16 h-8 cursor-pointer"
@@ -69,11 +69,11 @@ function Header() {
           </span>
           <div className="content-evenly hidden text-white">Menu</div>
         </div>
-        <div className="md:flex hidden content-center justify-center gap-4 relative flex-wrap grow">
+        <div className="md:flex hidden content-center justify-center gap-4 relative flex-wrap grow overflow-hidden">
           <div className="text-white self-center">All</div>
-          <div className="flex grow">
+          <div className="flex grow overflow-hidden">
             <input
-              className="h-5 px-3 py-4 rounded-md grow"
+              className="h-5 px-3 py-4 rounded-md grow overflow-hidden"
               placeholder="Search for your favourite Movie"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
