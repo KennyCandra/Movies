@@ -42,9 +42,7 @@ function Featured() {
     }
   };
 
-  const watchListInFeatured = watchlist?.filter((item1) =>
-    list.some((item2) => item1.id === item2.id)
-  );
+
   return (
     <div className="py-10 h-auto bg-black relative w-full">
       <div className="px-3 relative lg:w-[1013px] xl:w-[1280px] m-auto">
@@ -61,7 +59,6 @@ function Featured() {
               movie={movie}
               user={user}
               watchlist={watchlist}
-              watchListInFeatured={watchListInFeatured}
             />
           ))}
         </div>

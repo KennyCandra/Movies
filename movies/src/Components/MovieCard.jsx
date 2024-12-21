@@ -1,23 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import ExpandedMovie from "./ExpandedMovie";
 import { useNavigate } from "react-router-dom";
-import * as action from "../Modules/Movies";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import AddToListsModal from "./AddToListsModal";
-import { addMovie, removeMovie } from "../redux/watchListSlice";
+import FunctionalWatchListButton from "./FunctionalWatchListButton";
+import * as action from "../Modules/Movies";
 
 function MovieCard({ movie, poster, title, score }) {
   const [features, setFeatures] = useState(false);
   const [myList, setMyList] = useState(false);
   const [movieDetails, setMoviesDetails] = useState(false);
   const btnRef = useRef(null);
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, watchlist } = useSelector(
+  const { user } = useSelector(
     (state) => ({
       user: state.user?.data,
-      watchlist: state.watchlist.watchlist,
     }),
     shallowEqual
   );
@@ -28,77 +26,34 @@ function MovieCard({ movie, poster, title, score }) {
         setFeatures(false);
       }
     };
-    document.addEventListener("click", handleClickOutSide);
+    document.addEventListener("mousedown", handleClickOutSide);
     return () => {
-      document.removeEventListener("click", handleClickOutSide);
+      document.removeEventListener("mousedown", handleClickOutSide);
     };
   }, []);
 
-  const findMovie = watchlist.filter((item1) => item1.id === movie.id) || null;
-
-  const addToMovieToWatchList = async (movie1, user) => {
-    try {
-      setLoading(true);
-      const wantedToAddMovie = watchlist.find(
-        (movie) => movie.id === movie1.id
-      );
-      if (!wantedToAddMovie) {
-        dispatch(addMovie(movie1));
-        await action.addToWatchlist(movie1.id, user);
-      } else {
-        dispatch(removeMovie(movie1.id));
-        await action.removeFromWatchList(movie1.id, user);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <>
-      <div className="border-[1px] rounded-lg overflow-hidden border-black w-[10vw] aspect-[1/2.5] md:aspect-[1/2.2] lg:aspect-[1/2] xl:aspect-[1/1.9] relative">
+      <div
+        className="border-[1px] rounded-lg overflow-hidden border-black w-[10vw] aspect-[1/2.5] md:aspect-[1/2.2] lg:aspect-[1/2] xl:aspect-[1/1.9] relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
-          className="absolute top-0 left-0 z-10"
-          onClick={() => addToMovieToWatchList(movie, user)}
+          className="absolute right-2 top-1 rounded-full border border-black"
+          onClick={() => setFeatures(!features)}
         >
-          <div
-            className={`relative w-8 h-10 rounded-md overflow-hidden flex items-center justify-center ${
-              findMovie.length !== 0
-                ? "bg-yellow-500"
-                : "bg-gray-500 opacity-50 hover:bg-gray-800 hover:opacity-100 "
-            }`}
-          >
-            <span className="text-white text-xl font-bold">
-              {loading ? (
-                <img src="/images/Spinner@1x-1.0s-200px-200px.gif" />
-              ) : findMovie.length ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m4.5 12.75 6 6 9-13.5"
-                  />
-                </svg>
-              ) : (
-                "+"
-              )}
-            </span>
-            <div className="absolute bottom-0 left-0 overflow-hidden">
-              <div className="bg-brown-600 rotate-45 transform origin-top-left"></div>
-            </div>
-          </div>
+          <img src="images/1380510-200.png" className="size-5" />
         </button>
+        <FunctionalWatchListButton
+          movie={movie}
+          loading={loading}
+          setLoading={setLoading}
+        />
         {features && (
-          <div className="border border-black absolute left-[45%] flex flex-wrap w-28 full top-[10%] z-50">
+          <div
+            className="border border-black absolute right-2 flex flex-wrap w-28 full top-[10%] z-50"
+            ref={btnRef}
+          >
             <button
               className="border border-black hover:underline hover:bg-white hover:text-black text-white"
               onClick={() => action.addToFavoriteList(movie.id, user)}

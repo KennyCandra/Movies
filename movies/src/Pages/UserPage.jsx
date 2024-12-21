@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../Components/Header/Header";
 import { shallowEqual, useSelector } from "react-redux";
 import FeaturedMovieCard from "../Components/FeaturedMovieCard";
@@ -13,6 +13,29 @@ function UserPage() {
     }),
     shallowEqual
   );
+  const [hideButtons, setHideButtons] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const containerWidth = containerRef.current.offsetWidth;
+    if (
+      (windowWidth > 1280 && containerWidth > 1278) ||
+      (windowWidth > 1024 && containerWidth > 1012) ||
+      windowWidth < containerWidth
+    ) {
+      setHideButtons(true);
+    } else {
+      setHideButtons(false);
+    }
+  }, [windowWidth]);
 
   const handleScrollClickLeft = () => {
     if (containerRef.current) {
@@ -33,10 +56,11 @@ function UserPage() {
       }
     }
   };
+
+
   return (
     <div>
       <Header />
-
       <div className="bg-[#1f1f1f] h-[303px] flex flex-col gap-3 px-4 ">
         <div className="flex justify-end gap-2 text-white">
           <div className="p-3 rounded-full hover:bg-gray-500 cursor-pointer">
@@ -126,47 +150,50 @@ function UserPage() {
           </section>
         </div>
       </div>
-
-      <div className="px-3 relative lg:w-[1013px] xl:w-[1280px] m-auto">
-        {" "}
-        <button
-          className="absolute z-50 top-[40%] border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5 rotate-180"
-          onClick={handleScrollClickLeft}
-        >
-          <svg
-            className="invert"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
-          </svg>
-        </button>
-        <button
-          className="absolute z-50 top-[40%] right-3 border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5"
-          onClick={handleScrollClickRight}
-        >
-          <svg
-            className="invert"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
-          </svg>
-        </button>
-        <h1 className="text-3xl font-bold mb-3 relative before:w-1 before:rounded-sm before:absolute  before:bg-yellow-500 before:h-full mt-3">
+      <div className="relative w-auto lg:max-w-[1013px] xl:max-w-[1280px] m-auto">
+        {hideButtons && (
+          <>
+            <button
+              className="absolute z-50 top-[40%] border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5 rotate-180"
+              onClick={handleScrollClickLeft}
+            >
+              <svg
+                className="invert"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
+              </svg>
+            </button>
+            <button
+              className="absolute z-50 top-[40%] right-0 border bg-gray-700 opacity-50 hover:bg-gray-500 hover:opacity-100 transform-translate-y-1/2 p-5"
+              onClick={handleScrollClickRight}
+            >
+              <svg
+                className="invert"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
+              </svg>
+            </button>
+          </>
+        )}
+        <h1 className="text-3xl font-bold mb-3 relative before:w-1 w-auto before:rounded-sm before:absolute before:bg-yellow-500 before:h-full mt-3">
           <span className="pl-3"> Watchlist </span>
         </h1>
         <div
-          className="grid grid-flow-col gap-3 my-1 overflow-hidden snap-x snap-mandatory scroll-smooth border border-black rounded-md"
+          className="grid grid-flow-col w-fit gap-3 lg:max-w-[1013px] xl:max-w-[1280px] my-1 overflow-hidden snap-x snap-mandatory scroll-smooth border border-black rounded-md"
           ref={containerRef}
         >
           {watchlist.map((movie) => {
             return (
               <FeaturedMovieCard
+                key={movie.id}
                 movie={movie}
                 user={user}
                 watchlist={watchlist}
@@ -176,7 +203,6 @@ function UserPage() {
           })}
         </div>
       </div>
-
       <Footer />
     </div>
   );

@@ -22,8 +22,8 @@ function Header() {
   const location = useLocation();
 
   const logOut = () => {
-    localStorage.clear();
     navigate("/login");
+    localStorage.clear();
     dispatch(userlogout());
     dispatch(setWatchList([]));
   };
@@ -45,7 +45,7 @@ function Header() {
   };
 
   return (
-    <nav className="h-12 w-full bg-navBg">
+    <nav className="h-12 w-full bg-navBg z-[1] relative">
       <div className="max-w-[1280px] flex h-full justify-between gap-2 content-center m-auto px-2">
         <div className="flex flex-wrap lg:flex-row flex-row-reverse items-center justify-center gap-5 overflow-hidden">
           <img
@@ -69,43 +69,41 @@ function Header() {
           </span>
           <div className="content-evenly hidden text-white">Menu</div>
         </div>
-        <div className="md:flex hidden content-center justify-center gap-4 relative flex-wrap grow overflow-hidden">
+
+        <div className="md:flex hidden content-center justify-center gap-4 flex-wrap grow overflow-hidden">
           <div className="text-white self-center">All</div>
           <div className="flex grow overflow-hidden">
             <input
-              className="h-5 px-3 py-4 rounded-md overflow-hidden"
+              className="h-5 px-3 grow py-4 rounded-md overflow-hidden"
               placeholder="Search for your favourite Movie"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            {searchArr !== null && (
-              <div className="flex flex-col absolute w-[720px] max-h-[500px] top-8 text-white bg-black gap-3 z-50 overflow-scroll">
-                {location.pathname !== "/login" &&
-                  searchArr
-                    .filter((movie) => movie.poster_path !== null)
-                    .map((movie) => {
-                      return (
-                        <div
-                          onClick={() => navigation(movie.id)}
-                          className="flex gap-4 cursor-pointer hover:bg-gray-950 h-[80px]"
-                        >
-                          <div className="h-[70px] w-[50px]">
-                            <img
-                              src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
-                              alt="movie image"
-                            />
-                          </div>
-                          <div>
-                            <h1>{movie.title}</h1>
-                            <p>{movie.release_date}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-              </div>
-            )}
+            <div className="flex flex-col z-[9999] absolute max-h-[500px] top-12 text-white bg-black gap-3 overflow-scroll">
+              {searchArr !== null &&
+                searchArr.map((movie) => {
+                  return (
+                    <div
+                      onClick={() => navigation(movie.id)}
+                      className="flex gap-4 cursor-pointer hover:bg-gray-950 h-[80px]"
+                    >
+                      <div className="h-[70px] w-[50px]">
+                        <img
+                          src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                          alt="movie image"
+                        />
+                      </div>
+                      <div>
+                        <h1>{movie.title}</h1>
+                        <p>{movie.release_date}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
           </div>
         </div>
+
         <div className="lg:flex hidden flex-wrap content-center">
           <img
             src="/images/imbd.png"
@@ -117,7 +115,9 @@ function Header() {
           <p
             className="hidden lg:block text-white cursor-pointer hover:bg-gray-700 transition-all px-3 rounded-full"
             onClick={() =>
-              location.pathname === "/login" ? null : navigate("/lists/watchlist")
+              location.pathname === "/login"
+                ? null
+                : navigate("/lists/watchlist")
             }
           >
             Watch List
@@ -129,10 +129,15 @@ function Header() {
             className="text-white hidden md:block cursor-pointer hover:bg-gray-700 transition-all px-3 rounded-full relative"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={() => navigate('/user')}
           >
-            {user ? `${user.username}` : `Sign In`}
-            {hovered ? (
+            <p
+              onClick={() =>
+                location.pathname !== "/login" && navigate("/user")
+              }
+            >
+              {user ? `${user.username}` : `Sign In`}{" "}
+            </p>
+            {hovered && location.pathname !== "/login" ? (
               <div
                 className="absolute right-3 bg-white w-full"
                 onMouseEnter={() => setHovered(true)}

@@ -31,9 +31,9 @@ function Login() {
 
   return (
     <div className="bg-loginBackGround h-full">
-      <div className=" bg-white max-w-[1080px] flex m-auto">
+      <div className=" bg-white h-full max-w-[1080px] flex m-auto py-10">
         <section className="right-section flex flex-col justify-center flex-wrap items-center">
-          <h1 className="font-bold">Sign In</h1>
+          <h1 className="font-bold text-2xl">Sign In</h1>
           <div className="login-methods">
             {loginMethods.map((method) => {
               return (
@@ -65,8 +65,9 @@ function Login() {
               </span>
             </p>
           </div>
+        <div className="h-full border mx-2" />
         </section>
-        <section className="left-section mx-4">
+        <section className="left-section mx-7">
           <h1 className="font-bold text-2xl">
             Benefits of your free IMDb account
           </h1>

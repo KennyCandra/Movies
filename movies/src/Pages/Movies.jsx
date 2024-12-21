@@ -7,6 +7,7 @@ import MovieSearchPageAside from "../Components/MovieSearchPageAside";
 
 function Movies() {
   const [movies, setMovies] = useState([]);
+  const [activeButtons, setActiveButtons] = useState({});
   const [filters, setFilters] = useState({
     genres: [],
     options: "popularity.desc",
@@ -14,33 +15,25 @@ function Movies() {
     selectedGenres: [],
   });
 
-  const [activeButtons, setActiveButtons] = useState({});
   const searching = async () => {
     try {
       const activeGenres = Object.entries(activeButtons)
-        .filter(([_, isActive]) => isActive)
-        .map(([genre]) => genre);
-
-      const finalGenreArr = filters.genres
-        .filter((genre) => activeGenres.includes(genre.name))
-        .map((genre) => genre.id);
-
-      setFilters((prev) => ({
-        ...prev,
-        num: 2,
-        selectedGenres: finalGenreArr,
-      }));
-      const data = await search(filters.options, finalGenreArr, 1);
+        .filter(([_, isActive]) => isActive === true)
+        .map(([genreId, _]) => Number(genreId));
+      setFilters((prev) => ({ ...prev, selectedGenres: activeGenres, num: 2 }));
+      const data = await search(filters.options, activeGenres, 1);
       setMovies(data);
     } catch (error) {
       console.error(error);
     }
   };
+
   const fetchGenre = async () => {
     const genres = await fetchTypes();
     setFilters((prev) => ({ ...prev, genres: genres }));
   };
-  const fetchData = async () => {
+
+  const LoadMoreMovies = async () => {
     const Data = await fetchDataMovie(
       filters.options,
       filters.selectedGenres,
@@ -49,10 +42,33 @@ function Movies() {
     setMovies([...movies, ...Data]);
     setFilters((prev) => ({ ...prev, num: prev.num + 1 }));
   };
+
+  const fetchData = async () => {
+    const queryParams = new URLSearchParams(location.search);
+    const genreParam = queryParams.get("genre");
+    const Data = await fetchDataMovie(filters.options, genreParam, filters.num);
+    setMovies([...movies, ...Data]);
+    setFilters((prev) => ({
+      ...prev,
+      num: prev.num + 1,
+      selectedGenres: [genreParam],
+    }));
+  };
+
   useEffect(() => {
-    fetchData();
     fetchGenre();
-  }, []);
+    fetchData();
+    const queryParams = new URLSearchParams(location.search);
+    const genreParam = queryParams.get("genre");
+
+    if (genreParam && activeButtons[genreParam] !== true) {
+      setActiveButtons((prev) => ({
+        ...prev,
+        [genreParam]: true,
+      }));
+      setFilters((prev) => ({ ...prev, num: 2 }));
+    }
+  }, [location.search]);
 
   return (
     <>
@@ -83,7 +99,7 @@ function Movies() {
         </div>
       </div>
       <div className="flex flex-wrap justify-center content-center my-3">
-        <button onClick={fetchData}>CLick For More!</button>
+        <button onClick={LoadMoreMovies}>CLick For More!</button>
       </div>
       <Footer />
     </>

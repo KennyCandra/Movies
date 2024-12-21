@@ -1,12 +1,15 @@
 import { useRef, useEffect, useState } from "react";
-import { fetchList, getMyLists } from "../Modules/Movies";
+import { getMyLists } from "../Modules/Movies";
 import AddToListLists from "./AddToListLists";
 import { useNavigate } from "react-router-dom";
+import NewList from "./NewList";
 
 function AddToListsModal({ setListsModal, movie, user }) {
   const containerRef = useRef(null);
   const [myList, setMyLists] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [createNewList, setCreateNewList] = useState(false);
+  const newListRef = useRef(null);
 
   useEffect(() => {
     document.body.classList.add("overflow-y-hidden");
@@ -15,12 +18,6 @@ function AddToListsModal({ setListsModal, movie, user }) {
   const closeExpandedMovie = () => {
     document.body.classList.remove("overflow-y-hidden");
     setListsModal(false);
-  };
-
-  const handleClickOutSide = (e) => {
-    if (containerRef.current && !containerRef.current.contains(e.target)) {
-      closeExpandedMovie();
-    }
   };
 
   const fetchLists = async () => {
@@ -32,10 +29,20 @@ function AddToListsModal({ setListsModal, movie, user }) {
     fetchLists();
   }, []);
 
+  const handleClickOutSide = (e) => {
+    if (
+      containerRef.current &&
+      !newListRef.current &&
+      !containerRef.current.contains(e.target)
+    ) {
+      if (createNewList === false) closeExpandedMovie();
+    }
+  };
+
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutSide);
+    document.addEventListener("mouseup", handleClickOutSide);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutSide);
+      document.removeEventListener("mouseup", handleClickOutSide);
     };
   }, []);
 
@@ -59,7 +66,10 @@ function AddToListsModal({ setListsModal, movie, user }) {
 
         <div className="bg-[#1f1f1f] pt-2 pb-[60px] divide-y-[1px] divide-gray-400 ">
           <div className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center">
-            <div className="grow h-full flex" onClick={() => navigate('/lists/watchlist')}>
+            <div
+              className="grow h-full flex"
+              onClick={() => navigate("/lists/watchlist")}
+            >
               <h1 className="self-center">View Watchlist</h1>
             </div>
 
@@ -82,7 +92,13 @@ function AddToListsModal({ setListsModal, movie, user }) {
           </div>
           <div className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center">
             <div className="grow hover:bg-gray-600 h-full flex">
-              <h1 className="self-center"> Create new list</h1>
+              <h1
+                className="self-center"
+                onClick={() => setCreateNewList(true)}
+              >
+                {" "}
+                Create new list
+              </h1>
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -108,6 +124,9 @@ function AddToListsModal({ setListsModal, movie, user }) {
           )}
         </div>
       </div>
+      {createNewList && (
+        <NewList setCreateNewList={setCreateNewList} newListRef={newListRef} />
+      )}
     </div>
   );
 }

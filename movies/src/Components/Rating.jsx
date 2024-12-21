@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { addRating } from "../Modules/Movies";
 import { useRef } from "react";
 
-function Rating({ movie, setRating, ratingModal, ratingRes }) {
+function Rating({ movie, setRatingModal, ratingModal, ratingRes, setRating }) {
   const rating = Array(10).fill(5);
   const [hoverIndex, setHoverIndex] = useState(ratingRes.value - 1 || -1);
   const [ratingValue, setRatingValue] = useState(ratingRes.value || 0);
@@ -15,10 +15,10 @@ function Rating({ movie, setRating, ratingModal, ratingRes }) {
   }, [ratingModal]);
 
   const handleClickOutSide = (e) => {
-    if (!containerRef.current && containerRef.current.contains(e.target)) {
-      document.body.classList.remove("overflow-y-hidden");
-      setRating(false);
-    }
+    // if (!containerRef.current && containerRef.current.contains(e.target)) {
+    //   document.body.classList.remove("overflow-y-hidden");
+    //   setRatingModal(false);
+    // }
   };
 
   useEffect(() => {
@@ -48,7 +48,14 @@ function Rating({ movie, setRating, ratingModal, ratingRes }) {
 
   const addRatingAPI = async (id) => {
     await addRating(id, ratingValue);
-    setRating(false);
+    setRatingModal(false);
+    setRating((prev) => ({
+      ...prev,
+      rated: {
+        ...prev.rated,
+        value: ratingValue,
+      },
+    }));
     document.body.classList.remove("overflow-y-hidden");
   };
 
@@ -62,7 +69,10 @@ function Rating({ movie, setRating, ratingModal, ratingRes }) {
 
   return (
     <div className="bg-[#00000099] fixed top-0 z-[9999] w-[100vw] h-[100vh]">
-      <div ref={containerRef} className="p-6 w-[620px] h-[230px] bg-[#1f1f1f] flex flex-col justify-between items-center gap-2 relative translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%]">
+      <div
+        ref={containerRef}
+        className="p-6 w-[620px] h-[230px] bg-[#1f1f1f] flex flex-col justify-between items-center gap-2 relative translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%]"
+      >
         <h1 className="absolute text-xs size-[100px] transition-all left-[42%] top-[-40%]">
           {" "}
           <span

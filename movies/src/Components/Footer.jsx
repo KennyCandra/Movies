@@ -3,11 +3,11 @@ import { footerLogos } from "../variables/loginMethods";
 
 function Footer() {
   return (
-    <footer className="bg-black flex flex-col justify-center py-4 w-full h-[368px]">
-      <section className="flex flex-wrap justify-center gap-2">
-        <div className="h-28 w-[400px] border rounded-lg border-gray-300 flex flex-col justify-center items-center">
-          <h1 className="text-white">Follow IMDb on Social</h1>
-          <div className="flex justify-evenly w-full">
+    <footer className="bg-black flex flex-col justify-center py-4 w-full h-fit mt-10">
+      <section className="flex flex-wrap justify-center gap-2 w-full">
+        <div className="h-28 rounded-lg lg:border md:border-gray-300 flex flex-col justify-center items-center w-[100%] md:w-[25%]">
+          <h1 className="text-white hidden">Follow IMDb on Social</h1>
+          <div className="flex justify-evenly w-full gap-2">
             {footerLogos.map((icon, index) => (
               <a
                 target="_blank"
@@ -25,7 +25,7 @@ function Footer() {
           </div>
         </div>
 
-        <div className="w-[400px] h-28 border rounded-lg border-gray-300 flex justify-around items-center">
+        <div className="h-28 border w-[25%] rounded-lg border-gray-300 md:flex md:visible justify-around items-center hidden">
           <div>
             <h1 className="text-white">Follow IMDb App</h1>
             <h2 className="text-gray-400">For Android and iOS</h2>
@@ -40,15 +40,15 @@ function Footer() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 mt-3 w-full">
-        <div className="flex justify-center gap-12 text-white">
+      <section className="flex justify-center gap-4 mt-3 w-full items-center">
+        <div className="grid-cols-1 md:grid-cols-3 max-w-[500px] grid justify-center items-center gap-2 text-white">
           <a href="#">Help</a>
           <a href="#">Site Index</a>
           <a href="#">IMDbPro</a>
           <a href="#">Box Office Mojo</a>
           <a href="#">License IMDb Data</a>
         </div>
-        <div className="flex justify-center gap-12 text-white">
+        <div className="grid-cols-1 md:grid-cols-3 max-w-[500px] grid justify-center items-center gap-2 text-white">
           <a href="#">Press Room</a>
           <a href="#">Advertising</a>
           <a href="#">Jobs</a>

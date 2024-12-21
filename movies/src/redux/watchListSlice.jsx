@@ -15,7 +15,6 @@ export const watchListSlice = createSlice({
       state.watchlist = [...state.watchlist, action.payload];
     },
     removeMovie: (state, action) => {
-      console.log(state.watchlist);
       state.watchlist = state.watchlist.filter(
         (movie) => movie.id !== action.payload
       );

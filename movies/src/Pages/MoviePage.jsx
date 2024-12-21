@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Loader from "./Loader";
+import { useNavigate, useParams } from "react-router-dom";
+import Loader from "../Components/Loader";
 import * as action from "../Modules/Movies";
-import Reviews from "./Reviews";
-import Rating from "./Rating";
+import Reviews from "../Components/Reviews";
+import Rating from "../Components/Rating";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import AddToListsModal from "../Components/AddToListsModal";
+import FunctionalWatchListButton from "../Components/FunctionalWatchListButton";
 import { addMovie, removeMovie } from "../redux/watchListSlice";
-import AddToListsModal from "./AddToListsModal";
+import axios from "axios";
 
 function MoviePage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [rating, setRating] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [ratingModal, setRatingModal] = useState(false);
   const [listsModal, setListsModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { watchlist, user } = useSelector(
     (state) => ({
@@ -25,37 +30,10 @@ function MoviePage() {
     shallowEqual
   );
 
-  useEffect(() => {
-    const fetchMovie = async () => {
-      const response = await action.MoviePage(id);
-      setMovie(response);
-    };
-
-    const fetchReviews = async () => {
-      const review = await action.fetchReviews(id);
-      setReviews(review);
-    };
-
-    fetchReviews();
-    fetchMovie();
-  }, []);
-
-  useEffect(() => {
-    const fetchMovieRating = async () => {
-      const ratingResponse = await action.fetchRating(id);
-      setRating(ratingResponse);
-    };
-    fetchMovieRating();
-  }, [ratingModal]);
-
-  const findMovie = watchlist.filter((item1) => item1.id === Number(id)); //id is returned as string we have to convert it to number
-
   const addToMovieToWatchList = async (movie1, user) => {
+    const wantedToAddMovie = watchlist.find((movie) => movie.id === movie1.id);
     try {
       setLoading(true);
-      const wantedToAddMovie = watchlist.find(
-        (movie) => movie.id === movie1.id
-      );
       if (!wantedToAddMovie) {
         dispatch(addMovie(movie1));
         await action.addToWatchlist(movie1.id, user);
@@ -70,13 +48,39 @@ function MoviePage() {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await action.fetchImages(id);
+      const videosRes = await action.fetchVideos(id);
+      const movieRes = await action.MoviePage(id);
+      const review = await action.fetchReviews(id);
+      setMovie(movieRes);
+      setReviews(review);
+      setImages(response.data.posters);
+      setVideos(videosRes);
+    };
+    const fetchMovieRating = async () => {
+      const ratingResponse = await action.fetchRating(id);
+      setRating(ratingResponse);
+    };
+    fetchMovieRating();
+    fetchData();
+  }, []);
+
+  const findMovie =
+    watchlist.length !== 0 && movie
+      ? watchlist.filter((item1) => item1.id === movie.id)
+      : [];
+
   if (movie === null) return <Loader />;
 
   return (
     <div className="bg-[#2b2a2a] w-full h-full text-white mt-3 pb-28 px-3">
       <div className="xl:max-w-[1280px] lg:max-w-[1024px] m-auto">
         <header className="flex flex-wrap gap-2 justify-end mb-5">
-          <button>Cast & crew</button>
+          <button onClick={() => navigate(`/cast/${movie.id}`)}>
+            Cast & crew
+          </button>
           <button>User reviews</button>
           <button>Trivia</button>
           <button>IMDb Pro</button>
@@ -113,9 +117,7 @@ function MoviePage() {
                     d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
                   />
                 </svg>
-                <span className="font-bold inline ">
-                  {movie.vote_average}
-                </span>
+                <span className="font-bold inline ">{movie.vote_average}</span>
                 /10
               </div>
             </div>
@@ -152,44 +154,11 @@ function MoviePage() {
         <div className="mb-5 flex flex-col md:flex-row justify-center gap-2">
           <div className="flex flex-col-reverse md:flex-row gap-2 items-center justify-center">
             <div className="overflow-hidden hidden md:inline-block rounded-2xl relative md:w-[25vw]  lg:w-[225px] lg:h-[335px] xl:w-[280px] xl:h-[415px]">
-              <button
-                className="absolute top-0 left-0 z-10"
-                onClick={() => addToMovieToWatchList(movie, user)}
-              >
-                <div
-                  className={`relative w-8 h-10 rounded-md overflow-hidden flex items-center justify-center ${
-                    findMovie.length !== 0
-                      ? "bg-yellow-500"
-                      : "bg-gray-500 opacity-50 hover:bg-gray-800 hover:opacity-100 "
-                  }`}
-                >
-                  <span className="text-white text-xl font-bold">
-                    {loading ? (
-                      <img src="/images/Spinner@1x-1.0s-200px-200px.gif" />
-                    ) : findMovie.length ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m4.5 12.75 6 6 9-13.5"
-                        />
-                      </svg>
-                    ) : (
-                      "+"
-                    )}
-                  </span>
-                  <div className="absolute bottom-0 left-0 overflow-hidden">
-                    <div className="bg-brown-600 rotate-45 transform origin-top-left"></div>
-                  </div>
-                </div>
-              </button>
+              <FunctionalWatchListButton
+                movie={movie}
+                loading={loading}
+                setLoading={setLoading}
+              />
               <img
                 className="object-cover"
                 alt="Movie Picture"
@@ -207,11 +176,19 @@ function MoviePage() {
           </div>
 
           <div className="flex md:flex-col w-full gap-1 right ">
-            <div className="xl:w-[180px] grow xl:h-[205px] lg:w-[135px] lg:h-[165px] px-4 flex flex-wrap justify-center content-center bg-[#383738] rounded-lg font-bold hover:bg-[#383750] cursor-pointer">
+            <div
+              className=" grow flex flex-col justify-center items-center xl:h-[205px] w-full lg:h-[165px] px-4 bg-[#383738] rounded-lg font-bold hover:bg-[#383750] cursor-pointer"
+              onClick={() => console.log(videos)}
+            >
               Vidoes
+              <p className="self-center">{videos.results.length}</p>
             </div>
-            <div className="xl:w-[180px] grow xl:h-[205px] lg:w-[135px] lg:h-[165px] px-4 flex flex-wrap justify-center content-center bg-[#383738] rounded-lg font-bold hover:bg-[#383750] cursor-pointer">
-              PHOTOS
+            <div
+              className=" grow flex flex-col justify-center items-center xl:h-[205px] w-full lg:h-[165px] px-4 bg-[#383738] rounded-lg font-bold hover:bg-[#383750] cursor-pointer"
+              onClick={() => navigate(`/images/${id}`)}
+            >
+              <p>PHOTOS</p>
+              <p className="self-center">{images.length}</p>
             </div>
           </div>
         </div>
@@ -268,6 +245,7 @@ function MoviePage() {
                 {movie.genres.map((genre) => {
                   return (
                     <button
+                      onClick={() => navigate(`/movies?genre=${genre.id}`)}
                       className="hover:bg-buttonHover border p-1 rounded-full border-white border-opacity-50 px-3"
                       key={genre.id}
                     >
@@ -276,9 +254,9 @@ function MoviePage() {
                   );
                 })}
               </div>
-                <div className="md:w-[500px] w-[815px]">
-                  <p>{movie.overview}</p>
-                </div>
+              <div className="md:w-[500px] w-[815px]">
+                <p>{movie.overview}</p>
+              </div>
             </div>
           </div>
 
@@ -359,9 +337,10 @@ function MoviePage() {
       {ratingModal && (
         <Rating
           movie={movie}
-          setRating={setRatingModal}
+          setRatingModal={setRatingModal}
           ratingModal={ratingModal}
           ratingRes={rating.rated}
+          setRating={setRating}
         />
       )}
     </div>

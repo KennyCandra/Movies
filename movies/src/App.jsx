@@ -6,10 +6,13 @@ import Home from "./Pages/Home";
 import RequireAuth from "./Components/RequireAuth";
 import Login from "./Pages/Login.Jsx";
 import Movies from "./Pages/Movies";
-import MoviePage from "./Components/MoviePage";
+import MoviePage from "./Pages/MoviePage";
 import Footer from "./Components/Footer";
 import Lists from "./Pages/Lists";
 import UserPage from "./Pages/UserPage";
+import ImagesPage from "./Pages/ImagesPage";
+import CastPage from "./Pages/CastPage";
+import VideosPage from "./Pages/VideosPage";
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
             </>
           }
         />
+        <Route path="/cast/:id" element={<CastPage />} />
+        <Route path="/images/:id" element={<ImagesPage />} />
+        <Route path="/video/:id" element={<VideosPage />} />
         <Route path="/header" element={<Header />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/user" element={<UserPage />} />

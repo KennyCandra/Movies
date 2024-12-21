@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchMovies, addToFavoriteList } from "../Modules/Movies";
+import { fetchMovies } from "../Modules/Movies";
+import FunctionalWatchListButton from "./FunctionalWatchListButton";
 
 function Main() {
   const [popularList, setPopularList] = useState([]);
@@ -9,6 +10,7 @@ function Main() {
   const containerRef = useRef(null);
   const secContainerRef = useRef(null);
   const [number, setNumber] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +46,7 @@ function Main() {
       return;
     }
     if (containerRef.current) {
-      containerRef.current.scrollLeft += 600;
+      containerRef.current.scrollLeft += 650;
       secContainerRef.current.scrollTop += 150;
     }
     setNumber(number + 1);
@@ -74,14 +76,11 @@ function Main() {
                 />
                 <div className="flex h-[130px] md:h-[84px] xl:h-[96px] gap-3 bottom-0 left-0 bg-[rgba(0,0,0,0.5)] justify-start w-100% absolute items-start px-5 group cursor-pointer">
                   <div className="relative w-[90px] h-[134px] top-[-4px] md:top-[-50px] lg:h-[200px] lg:top-[-116px] lg:w-[134px] xl:h-[245px] xl:w-[165px] xl:top-[-149px]">
-                    <button
-                      className="absolute"
-                      onClick={() => addToFavoriteList(movie.id)}
-                    >
-                      <p className="relative w-8 h-10 bg-gray-500 opacity-50 hover:opacity-100 hover:bg-gray-800 rounded-t-md rounded-bl-md">
-                        <span className="text-white text-xl font-bold">+</span>
-                      </p>
-                    </button>
+                    <FunctionalWatchListButton
+                      movie={movie}
+                      setLoading={setLoading}
+                      loading={loading}
+                    />
                     <img
                       onClick={() => navigate(`/movie/${movie.id}`)}
                       className="object-cover"

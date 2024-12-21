@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Components/Loader";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/bearPopulationSlice";
 import { setWatchList } from "../redux/watchListSlice";
 import { fetchWatchList } from "../Modules/Movies";
@@ -11,7 +11,13 @@ function CallBack() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user.data);
+  const { user, watchlist } = useSelector(
+    (state) => ({
+      user: state.user?.data,
+      watchlist: state.watchlist.watchlist,
+    }),
+    shallowEqual
+  );
 
   const setLocalStorage = async (token, token1) => {
     localStorage.setItem(token, token1);
@@ -31,9 +37,13 @@ function CallBack() {
     }
   };
 
+  const setReduxWatchList = async (response) => {
+    dispatch(setWatchList(response));
+  };
+
   const fetchWatchListData = async (user) => {
     const response = await fetchWatchList(user);
-    dispatch(setWatchList(response));
+    await setReduxWatchList(response);
   };
 
   const navigation = async () => {
@@ -52,12 +62,12 @@ function CallBack() {
       await setLocalStorage("session_id", session_id);
       await fetchUser(session_id);
       await fetchWatchListData(user);
-      await navigation();
+      navigation();
     } catch (error) {
       console.error(error);
     }
   };
-
+  
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const requestToken = params.get("request_token");

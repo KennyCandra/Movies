@@ -303,3 +303,41 @@ export const removeFromList = async (id, MovieD) => {
     console.error(error);
   }
 };
+
+export const fetchImages = async (movieD) => {
+  try {
+    const response = axios.get(
+      `https://api.themoviedb.org/3/movie/${movieD}/images`,
+      {
+        headers: headers,
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchCredits = async (id) => {
+  try {
+    let response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${id}/credits`,
+      { headers: headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchVideos = async (id) => {
+  try {
+    let response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${id}/videos`,
+      { headers: headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
