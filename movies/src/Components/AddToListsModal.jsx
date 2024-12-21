@@ -25,6 +25,11 @@ function AddToListsModal({ setListsModal, movie, user }) {
     setMyLists(lists);
   };
 
+  const navigation = (watchlistPlace) => {
+    navigate(`/lists/${watchlistPlace}`);
+    document.body.classList.remove("overflow-y-hidden");
+  };
+
   useEffect(() => {
     fetchLists();
   }, []);
@@ -65,11 +70,11 @@ function AddToListsModal({ setListsModal, movie, user }) {
         </div>
 
         <div className="bg-[#1f1f1f] pt-2 pb-[60px] divide-y-[1px] divide-gray-400 ">
-          <div className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center">
-            <div
-              className="grow h-full flex"
-              onClick={() => navigate("/lists/watchlist")}
-            >
+          <div
+            className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center"
+            onClick={() => navigation("watchlist")}
+          >
+            <div className="grow h-full flex">
               <h1 className="self-center">View Watchlist</h1>
             </div>
 
@@ -90,6 +95,7 @@ function AddToListsModal({ setListsModal, movie, user }) {
               </svg>
             </p>
           </div>
+
           <div className="flex hover:bg-gray-600 px-4 justify-between h-[50px] items-center">
             <div className="grow hover:bg-gray-600 h-full flex">
               <h1

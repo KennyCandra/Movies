@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Reviews({ reviews }) {
+function Reviews({ reviews  , reviewsRef}) {
   const [index, setIndex] = useState(0);
 
   const next = () => {
@@ -19,7 +19,7 @@ function Reviews({ reviews }) {
     }
   };
   return (
-    <div className="my-5 w-full xl:max-w-[1280px] lg:max-w-[1024px] m-auto ">
+    <div className="my-5 w-full xl:max-w-[1280px] lg:max-w-[1024px] m-auto " ref={reviewsRef}>
       <div className="xl:w-[860px] ">
         <section className="flex justify-between mb-4">
           <h3 className="pl-3 text-3xl font-bold">

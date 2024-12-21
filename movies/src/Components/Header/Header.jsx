@@ -79,9 +79,10 @@ function Header() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <div className="flex flex-col z-[9999] absolute max-h-[500px] top-12 text-white bg-black gap-3 overflow-scroll">
-              {searchArr !== null &&
-                searchArr.map((movie) => {
+
+            {searchArr !== null && (
+              <div className="flex flex-col z-[9999] absolute max-h-[500px] top-12 text-white bg-black gap-3 overflow-scroll">
+                {searchArr.map((movie) => {
                   return (
                     <div
                       onClick={() => navigation(movie.id)}
@@ -100,7 +101,8 @@ function Header() {
                     </div>
                   );
                 })}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 

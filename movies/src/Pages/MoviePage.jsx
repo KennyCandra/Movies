@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/Loader";
 import * as action from "../Modules/Movies";
@@ -8,11 +8,11 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AddToListsModal from "../Components/AddToListsModal";
 import FunctionalWatchListButton from "../Components/FunctionalWatchListButton";
 import { addMovie, removeMovie } from "../redux/watchListSlice";
-import axios from "axios";
 
 function MoviePage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const reviewsRef = useRef(null)
   const [movie, setMovie] = useState(null);
   const [rating, setRating] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -29,6 +29,11 @@ function MoviePage() {
     }),
     shallowEqual
   );
+
+
+  const executeScroll = () => {
+    reviewsRef.current.scrollIntoView()
+  }
 
   const addToMovieToWatchList = async (movie1, user) => {
     const wantedToAddMovie = watchlist.find((movie) => movie.id === movie1.id);
@@ -81,11 +86,7 @@ function MoviePage() {
           <button onClick={() => navigate(`/cast/${movie.id}`)}>
             Cast & crew
           </button>
-          <button>User reviews</button>
-          <button>Trivia</button>
-          <button>IMDb Pro</button>
-          <button>All topics</button>
-          <button>share</button>
+          <button onClick={executeScroll}>User reviews</button>
         </header>
 
         <div className="flex justify-between mb-3 px-2 md:px-10 pt-5">
@@ -178,7 +179,6 @@ function MoviePage() {
           <div className="flex md:flex-col w-full gap-1 right ">
             <div
               className=" grow flex flex-col justify-center items-center xl:h-[205px] w-full lg:h-[165px] px-4 bg-[#383738] rounded-lg font-bold hover:bg-[#383750] cursor-pointer"
-              onClick={() => console.log(videos)}
             >
               Vidoes
               <p className="self-center">{videos.results.length}</p>
@@ -325,7 +325,7 @@ function MoviePage() {
           </div>
         </div>
       </div>
-      <Reviews reviews={reviews} />
+      <Reviews reviews={reviews} reviewsRef={reviewsRef} />
       {listsModal && (
         <AddToListsModal
           setListsModal={setListsModal}

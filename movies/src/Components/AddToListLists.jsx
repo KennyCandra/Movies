@@ -17,6 +17,11 @@ function AddToListLists({ item, movie }) {
     }
   };
 
+  const navigation = (item) => {
+    navigate(`/lists/${item.id}`);
+    document.body.classList.remove("overflow-y-hidden");
+  };
+
   useEffect(() => {
     handleFetchMovies();
   }, []);
@@ -52,7 +57,10 @@ function AddToListLists({ item, movie }) {
       >
         <h1 className="self-center flex items-end justify-center gap-1">
           {loading ? (
-            <img src="/images/Spinner@1x-1.0s-200px-200px.gif" className="size-4" />
+            <img
+              src="/images/Spinner@1x-1.0s-200px-200px.gif"
+              className="size-4"
+            />
           ) : foundMovie.length ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +84,7 @@ function AddToListLists({ item, movie }) {
       </div>
       <div
         className="hover:bg-gray-600 cursor-pointer px-4 h-full flex"
-        onClick={() => navigate(`/lists/${item.id}`)}
+        onClick={() => navigation(item)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

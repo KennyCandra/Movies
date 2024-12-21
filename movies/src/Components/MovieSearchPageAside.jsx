@@ -20,7 +20,7 @@ function MovieSearchPageAside({
     if (genreParam) {
       setExpand((prevExpand) => ({
         ...prevExpand,
-        Filters: !prevExpand.Filters,
+        Filters: true,
       }));
     }
   }, []);
