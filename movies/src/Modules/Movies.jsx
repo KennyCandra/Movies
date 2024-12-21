@@ -341,3 +341,16 @@ export const fetchVideos = async (id) => {
     console.error(error);
   }
 };
+
+
+export const fetchRatings = async (account) => {
+  try {
+    let response = await axios.get(
+      `https://api.themoviedb.org/3/account/${account.id}/rated/movies`,
+      { headers: headers }
+    );
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};

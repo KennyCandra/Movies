@@ -3,9 +3,12 @@ import Header from "../Components/Header/Header";
 import { shallowEqual, useSelector } from "react-redux";
 import FeaturedMovieCard from "../Components/FeaturedMovieCard";
 import Footer from "../Components/Footer";
+import { fetchRatings, getMyLists } from "../Modules/Movies";
 
 function UserPage() {
   const containerRef = useRef(null);
+  const [lists, setMyLists] = useState([]);
+  const [rating, setRating] = useState([]);
   const { user, watchlist } = useSelector(
     (state) => ({
       user: state.user?.data,
@@ -16,6 +19,20 @@ function UserPage() {
   const [hideButtons, setHideButtons] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const fetchLists = async () => {
+    const lists = await getMyLists(user);
+    setMyLists(lists);
+  };
+
+  const fetchrating = async () => {
+    const lists = await fetchRatings(user);
+    setRating(lists);
+  };
+
+  useEffect(() => {
+    fetchLists();
+    fetchrating();
+  });
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -56,7 +73,6 @@ function UserPage() {
       }
     }
   };
-
 
   return (
     <div>
@@ -121,14 +137,14 @@ function UserPage() {
 
           <section className="grid grid-cols-2  lg:grid-cols-4 gap-3 text-white">
             <div className="bg-black h-[75px] flex items-center justify-center font-bold flex-col rounded-lg md:w-[160px] md:h-[75px] text-sm md:text-md">
-              Ratings <p>{watchlist.length}</p>
+              Ratings <p>{rating.length}</p>
             </div>
             <div className="bg-black h-[75px] flex items-center justify-center font-bold flex-col rounded-lg md:w-[160px] md:h-[75px] text-sm md:text-md">
               <h1>Watchlist</h1>
               <p>{watchlist.length}</p>
             </div>
             <div className="bg-black h-[75px] flex items-center justify-center font-bold flex-col rounded-lg md:w-[160px] md:h-[75px] text-sm md:text-md">
-              Lists <p>{watchlist.length}</p>
+              Lists <p>{lists.length}</p>
             </div>
             <div className="bg-black h-[75px] flex items-center justify-center font-bold flex-col rounded-lg md:w-[160px] md:h-[75px] text-sm md:text-md">
               More{" "}
